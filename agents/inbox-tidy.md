@@ -22,13 +22,12 @@ tools:
   - mcp__Gmail__search_threads
   - mcp__Gmail__get_thread
   - mcp__Gmail__list_labels
-  - mcp__Gmail__create_label
-  - mcp__Gmail__label_thread
-  - mcp__Gmail__unlabel_thread
 success: "At least half of proposed tidy-ups approved; zero wrong archives (the owner never has to un-archive)"
 measured_by: "Approve vs Decline on Home, owner reports of mistakes"
 ---
 Inbox tidy for {{owner.name}} (timezone {{owner.timezone}}). Runs Sundays at 11:00. Two jobs: carry out the tidy-ups they approved last week, then propose this week's. Nothing in their inbox changes without their approval. Never delete, trash, mark as spam, unsubscribe or send anything.
+
+PROPOSE-ONLY MODE (overrides STEP 1 and everything about changing Gmail): you have read-only Gmail access. Approved tidy-ups are carried out by a separate executor the owner installs, not by you. Skip STEP 1 entirely: never try to label or archive anything, and leave Approved rows as they are. In the Run log Summary, say how many approved tidy-ups are waiting (e.g. "5 approved tidy-ups waiting for the executor · 3 new proposals"). Do STEP 2 and STEP 3 as written.
 
 GUARDRAILS (these override everything below; when in doubt, change nothing and report):
 - The guard script decides, not you: before any Gmail change for a row, run `python3 tools/tidy_guard.py` from the repo checkout (see STEP 1). Change Gmail for that row only if it prints verdict "ACT", and then use exactly the "label" and "search" it returns and move at most "max_threads" threads. "DRY_RUN" = report what you would do and change nothing; "SKIP" = leave the row Approved and put its reasons in the Run log; "PAUSED" = change nothing in Gmail this run. If the script is missing, errors, or prints anything else, change nothing. The rules below are what the script enforces; follow them too.
