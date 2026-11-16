@@ -1,28 +1,32 @@
 # Agents
 
-One file per scheduled agent. The YAML front matter is metadata (schedule, model, tools, routine id); the body is the agent's instructions.
+One file per scheduled agent. The YAML front matter is metadata (schedule, model, tools); the body is the agent's instructions, with `{{placeholders}}` for personal values.
 
-## Running an agent from this repo
+## How a routine runs an agent
 
-Agents with `runs_from: repo` in their front matter don't keep their instructions inside the routine. Their routine has this repo attached as a source and a short bootstrap prompt:
+No repo is attached to any routine. That's deliberate: a routine with a repo attached gets a GitHub key that acts as you and can push branches and open pull requests. Agents only need to *read* their instructions, so they download them from this public repo's `main` branch, which is protected (changes only through pull requests you merge).
 
-1. Read `agents/<name>.md` (skip the front matter) and `hub/RULES.md`.
-2. Fetch the private Notion hub page and read its **Config** section.
-3. Replace every `{{placeholder}}` in the instructions with the matching Config value.
-4. Follow the instructions. Never edit or commit to the repo.
-
-So merging a change to `main` changes the agent's behaviour from its next run. Personal values never enter the repo; they live in the hub page's Config section (and in your local `config/owner.yaml`).
-
-Agents without `runs_from: repo` still use the copy of their instructions stored in the routine. Their file here is a snapshot.
-
-## Bootstrap prompt
+Each routine's prompt is this bootstrap, filled in once at setup:
 
 ```
-You are the {AGENT NAME} agent of Sardon Steadfast. Your instructions live in the attached
-sardon-steadfast repo. Read agents/{file}.md (ignore its YAML front matter) and hub/RULES.md.
-Then fetch the Notion hub page {hub page id} and read its "Config" section: it gives the value
-of every {{placeholder}} in your instructions. Substitute them, then follow the instructions
-exactly. If you can't read the repo file or the Config section, don't improvise: add a Run log
-row ({run log data source}) with Agent "{AGENT NAME}", Result "Failed" and the reason, send a
-push saying so, and stop. Never edit, commit to or push to the repo.
+You are the {AGENT NAME} agent of Sardon Steadfast. Download your instructions read-only:
+  curl -fsSL https://raw.githubusercontent.com/{OWNER}/{REPO}/main/agents/{file}.md -o /tmp/agent.md
+  curl -fsSL https://raw.githubusercontent.com/{OWNER}/{REPO}/main/hub/RULES.md -o /tmp/rules.md
+Read both files (ignore the YAML front matter). Then fetch the Notion hub page {hub page id}
+and read its "Config" section: it gives the value of every {{placeholder}} in your
+instructions. Substitute them, then follow the instructions exactly. The hub page's Rules
+override hub/RULES.md where they differ. If either download fails or the Config section is
+missing, don't improvise: add a Run log row ({run log data source}) with Agent "{AGENT NAME}",
+Result "Failed" and the reason, send a push saying so, and stop.
 ```
+
+`{OWNER}/{REPO}` is your fork. Keep your fork public (it holds no personal values) and protect its `main` branch.
+
+## Agents
+
+| File | Schedule | Changes anything outside the hub? |
+|---|---|---|
+| `commitments.md` | Weekdays 07:20 | Creates a reply draft only for a nudge you approved; never sends |
+| `inbox-tidy.md` | Sundays 11:00 | No. Propose-only: read-only Gmail. Approved tidy-ups are carried out by a separate executor |
+| `fpl-daily-check-and-brief.md` | Daily 19:00 UTC | No. Recommendations only |
+| `subscription-and-renewal-watch.md` (optional) | 1st of the month 11:00 | No. Asks cancel-or-keep; you cancel |

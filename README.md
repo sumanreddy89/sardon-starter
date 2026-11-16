@@ -7,8 +7,9 @@
 | Agent | When | What it does | What it can change |
 |---|---|---|---|
 | **Commitments** | Weekdays 07:20 | Finds promises in your email, both ways ("I'll send it Friday", "refund in 5 days"), tracks them and closes them when kept | Only the hub. If someone owes you and is late, it proposes a polite nudge draft; it writes the draft only after you approve, and never sends |
-| **Inbox tidy** | Sundays 11:00 | Proposes moving unread newsletters and promotions out of your inbox, in plain English | Only what you approved, only on Sunday 10:30–13:00, checked first by `tools/tidy_guard.py`; it adds a `Tidy/` label and removes Inbox, nothing else. Nothing is deleted |
+| **Inbox tidy** | Sundays 11:00 | Proposes moving unread newsletters and promotions out of your inbox, in plain English | Nothing yet: propose-only, with read-only Gmail. A separate executor that only your Google login can approve will carry out approved tidy-ups (in progress) |
 | **FPL brief** (optional) | Daily check, brief the evening before each deadline | Captain, transfers, bench and mini-league swings for your Fantasy Premier League team | Nothing. Recommendations only |
+| **Subscription watch** (optional) | 1st of each month | Lists your subscriptions and renewals from receipts in your email; asks cancel-or-keep about likely waste | Nothing. You cancel; it checks next month and logs the saving |
 
 ## What you need
 
@@ -27,6 +28,7 @@
 ## Safety
 
 - Agents never send email, delete, unsubscribe, pay or log in anywhere. Their tool lists don't include those tools.
+- No repo is attached to any agent, so they have no GitHub access: they download their instructions read-only from your public fork.
 - Anything that touches your accounts goes to **Proposed actions** first. Silence means no.
 - Inbox tidy's limits are enforced in code and covered by tests (`python3 -m unittest discover tests`).
 - Kill switch: add a Facts row "Pause inbox tidy" updated by you.

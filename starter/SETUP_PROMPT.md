@@ -32,10 +32,11 @@ you create, and never change anything in my Gmail during setup.
    agents/commitments.md and agents/inbox-tidy.md, plus agents/fpl-daily-check-and-brief.md
    only if I gave an FPL team ID. For each, take name, model, tools (allowed_tools)
    and schedule from the file's front matter, replacing {{owner.timezone}} in the cron.
-   Sources: my fork's URL (FPL also gets https://github.com/{{fpl.repo}}). Connectors:
-   Notion and Gmail. The prompt is the bootstrap prompt in agents/README.md, filled in
-   with the agent's name and file, my hub page id and my Run log address. Show me each
-   body before creating it.
+   Attach NO repository (no "sources"): agents download their instructions read-only,
+   so they get no GitHub access. Connectors: Notion and Gmail. The prompt is the
+   bootstrap prompt in agents/README.md, filled in with the agent's name and file, my
+   fork's owner/name, my hub page id and my Run log address. Make sure my fork is
+   public, since the agents download from it. Show me each body before creating it.
 
 6. Test, with my go-ahead for each run:
    - Run Inbox tidy once now. Unless it is Sunday 10:30-13:00 my time, the guard must
