@@ -211,17 +211,19 @@ def build_parser():
     p.add_argument("--count", type=int, required=True, help="threads the search matches now")
     p.add_argument("--moved-so-far", type=int, default=0, help="threads already moved this run")
     p.add_argument("--paused", type=yes_no, required=True, help="yes if the owner paused Inbox tidy")
-    p.add_argument("--now", help=argparse.SUPPRESS)  # tests only: ISO datetime in --tz
     return p
 
 
-def main(argv=None):
+def main(argv=None, _now=None):
+    """Command-line entry point. The clock always comes from the system;
+    `_now` exists only for tests calling this function from Python and can't
+    be set from the command line."""
     args = build_parser().parse_args(argv)
     if ZoneInfo is None:
         out = {"verdict": "SKIP", "reasons": ["Python lacks zoneinfo; can't check the time window"]}
     else:
         tz = ZoneInfo(args.tz)
-        now = datetime.fromisoformat(args.now).replace(tzinfo=tz) if args.now else datetime.now(tz)
+        now = datetime.fromisoformat(_now).replace(tzinfo=tz) if _now else datetime.now(tz)
         out = decide(args, now)
     print(json.dumps(out, ensure_ascii=False))
     return EXIT_CODES[out["verdict"]]
