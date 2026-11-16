@@ -2,8 +2,8 @@
 name: Inbox tidy
 schedule: "CRON_TZ={{owner.timezone}} 0 11 * * 0"
 model: claude-sonnet-5-5
-runs_from: repo
-repo_sources: ["<your fork of this repo>"]
+runs_from: public-url
+repo_sources: []
 tools:
   - preset:default
   - Bash
