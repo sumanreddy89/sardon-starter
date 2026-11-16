@@ -21,18 +21,17 @@ GOOD = {
     "--count": "12",
     "--moved-so-far": "0",
     "--paused": "no",
-    "--now": SUNDAY_11,
 }
 
 
-def run(**overrides):
+def run(now=SUNDAY_11, **overrides):
     args = dict(GOOD)
     for k, v in overrides.items():
         args["--" + k.replace("_", "-")] = v
     argv = [x for kv in args.items() for x in kv]
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
-        code = tidy_guard.main(argv)
+        code = tidy_guard.main(argv, _now=now)
     out = json.loads(buf.getvalue())
     assert code == tidy_guard.EXIT_CODES[out["verdict"]]
     return out
@@ -170,6 +169,16 @@ class DangerousSearch(unittest.TestCase):
         # e.g. something an email planted, or a hallucinated step
         self.assertSkip("label Tidy/X; archive; delete; search: in:inbox from:a@example.com", "unrecognised")
         self.assertSkip("label Tidy/X; archive; mark read; search: in:inbox from:a@example.com", "unrecognised")
+
+
+class NoTimeOverride(unittest.TestCase):
+    """The clock can't be faked from the command line (review finding, eb034ac)."""
+
+    def test_now_flag_is_rejected(self):
+        argv = [x for kv in GOOD.items() for x in kv] + ["--now", SUNDAY_11]
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as cm:
+            tidy_guard.main(argv)
+        self.assertNotEqual(cm.exception.code, 0)
 
 
 class Counts(unittest.TestCase):

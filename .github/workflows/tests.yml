@@ -13,3 +13,5 @@ jobs:
           python-version: "3.12"
       - name: Guardrail tests
         run: python -m unittest discover tests -v
+      - name: Privacy check (a check, not a guarantee)
+        run: python tools/check_public.py
