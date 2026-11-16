@@ -1,0 +1,18 @@
+# Reference only: your real values live in the Config block on your private Notion hub page.
+# Copy to config/owner.yaml (gitignored) if you want tools/check_public.py to check for them.
+owner:
+  name: Alex
+  email: alex@example.com
+  timezone: Europe/Berlin
+  home_city: Berlin
+  home_country: Germany
+agents:
+  morning_brief: false
+inbox_tidy:
+  keep_senders: "Newsletter A, Newsletter B"
+fpl:
+  entry_id: 1234567
+  repo: sumanreddy89/fpl-gameweek-brief
+hub:
+  page_id: your-notion-hub-page-id
+private_terms: []
