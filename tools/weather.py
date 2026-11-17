@@ -16,6 +16,7 @@ import argparse
 import json
 import os
 import sys
+import unicodedata
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta
@@ -49,6 +50,36 @@ def _get(url):
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=20) as r:
         return json.loads(r.read().decode())
+
+
+PLACES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "places.json")
+
+
+def _key(name):
+    """Case- and accent-insensitive key: "Málaga" and "malaga" match."""
+    name = unicodedata.normalize("NFKD", name.split(",")[0].strip().lower())
+    return "".join(c for c in name if not unicodedata.combining(c))
+
+
+def known_place(name, path=PLACES_FILE):
+    """Look the city up in places.json so everyday runs need only api.met.no."""
+    try:
+        with open(path, encoding="utf-8") as fh:
+            table = json.load(fh)
+    except (OSError, ValueError):
+        return None
+    want = _key(name)
+    for k, r in table.items():
+        if want in (_key(k), _key(r["name"])):
+            return {"name": r["name"], "country": r["country"], "country_code": r["country_code"],
+                    "lat": r["lat"], "lon": r["lon"], "timezone": r["timezone"],
+                    "yr_url": f"https://www.yr.no/en/forecast/daily-table/2-{r['id']}"}
+    return None
+
+
+def find_place(name):
+    """Built-in table first; the geocoding site only for cities not in it."""
+    return known_place(name) or geocode(name)
 
 
 def geocode(name):
@@ -245,7 +276,7 @@ def main(argv=None):
     ap.add_argument("--kind", choices=["home", "trip"], default="home",
                     help="home: first day is Today, then Tomorrow; trip: every day is Trip")
     a = ap.parse_args(argv)
-    place = geocode(a.place)
+    place = find_place(a.place)
     points, six, updated = hourly(place)
     tz = ZoneInfo(place["timezone"])
     start = date.fromisoformat(a.start) if a.start else datetime.now(tz).date()
