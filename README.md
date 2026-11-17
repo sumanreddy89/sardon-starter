@@ -11,6 +11,10 @@
 | **FPL brief** (optional) | Daily check, brief the evening before each deadline | Captain, transfers, bench and mini-league swings for your Fantasy Premier League team | Nothing. Recommendations only |
 | **Subscription watch** (optional) | 1st of each month | Lists your subscriptions and renewals from receipts in your email; asks cancel-or-keep about likely waste | Nothing. You cancel; it checks next month and logs the saving |
 
+## See it first
+
+`home/demo.html` is the Home page with an invented person's week: approvals, promises, wins to confirm, agent health. Open it in a browser; every button works and nothing is saved. Your real Home reads your own Notion hub.
+
 ## What you need
 
 - A Claude plan with Claude Code and scheduled routines.
