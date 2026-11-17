@@ -4,7 +4,7 @@ One file per scheduled agent. The YAML front matter is metadata (schedule, model
 
 ## How a routine runs an agent
 
-No repo is attached to any routine. That's deliberate: a routine with a repo attached gets a GitHub key that acts as you and can push branches and open pull requests. Agents only need to *read* their instructions, so they download them from this public repo's `main` branch, which is protected (changes only through pull requests you merge).
+Agents that only follow instructions (Commitments, Inbox tidy, Subscription watch) have no repo attached: a routine with a repo attached gets a GitHub key that acts as you and can push branches and open pull requests, so they download their instruction files read-only instead. Agents that run code (Weather, FPL) do need their repo attached, because Claude's safety checks block running code downloaded from the web. Their repos are public with `main` protected, so the most they could do is open a branch or pull request you'd see and decline.
 
 Each routine's prompt is this bootstrap, filled in once at setup:
 
