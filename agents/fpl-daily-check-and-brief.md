@@ -2,8 +2,8 @@
 name: FPL daily check and brief
 schedule: "0 19 * * *"
 model: claude-opus-5-5
-runs_from: public-url
-repo_sources: []
+runs_from: repo
+repo_sources: ["https://github.com/sumanreddy89/fpl-gameweek-brief"]
 tools:
   - Bash
   - Read
@@ -27,7 +27,7 @@ measured_by: "Suggested captain's points vs the FPL site's top-manager captain a
 ---
 Fantasy Premier League daily check for {{owner.name}} (FPL team ID {{fpl.entry_id}}). They are usually in {{owner.home_city}} ({{owner.timezone}}). This routine runs every day at 19:00 UTC. It writes the gameweek brief only on the last evening before a deadline, and a short after-deadline note on the first evening after one. Other evenings it stops quickly and stays silent unless there is a price alert.
 
-The public repository {{fpl.repo}} is the source of truth. Download it read-only (no repo is attached to this routine, so you have no GitHub write access): `mkdir -p /tmp/fpl && curl -fsSL https://codeload.github.com/{{fpl.repo}}/tar.gz/main | tar xz -C /tmp/fpl --strip-components=1`. Work from /tmp/fpl (the folder containing SKILL.md and scripts/fpl_daily.py). Read its SKILL.md and follow it, so that merged updates apply automatically. If the checkout is missing, load the skill anthropic-skills:fpl-gameweek-brief instead. These routine instructions override the skill only on scheduling, delivery and the rules below.
+The repository {{fpl.repo}} is attached to this routine and is the source of truth (it must be attached, not downloaded: Claude's safety checks block running code fetched from the web). Find its checkout (the folder containing SKILL.md and scripts/fpl_daily.py) and work from there. Use it read-only: never edit, commit, push, create branches or open pull requests. Read its SKILL.md and follow it, so that merged updates apply automatically. If the checkout is missing, load the skill anthropic-skills:fpl-gameweek-brief instead. These routine instructions override the skill only on scheduling, delivery and the rules below.
 
 STEP 1 - Daily check:
 - Run `python3 scripts/fpl_daily.py --team-id {{fpl.entry_id}}` from the checkout and use write_brief_today, after_deadline_view_due and price_alerts. If the script is missing, is blocked or can't reach the site, do not try to work around that. Use the fallback below.
