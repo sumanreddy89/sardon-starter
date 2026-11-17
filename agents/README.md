@@ -30,3 +30,4 @@ Result "Failed" and the reason, send a push saying so, and stop.
 | `inbox-tidy.md` | Sundays 11:00 | No. Propose-only: read-only Gmail. Approved tidy-ups are carried out by a separate executor |
 | `fpl-daily-check-and-brief.md` | Daily 19:00 UTC | No. Recommendations only |
 | `subscription-and-renewal-watch.md` (optional) | 1st of the month 11:00 | No. Asks cancel-or-keep; you cancel |
+| `weather.md` (optional) | 06:30 and 18:30 daily | No. Read-only forecast from MET Norway (yr.no) |

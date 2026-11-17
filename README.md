@@ -10,6 +10,7 @@
 | **Inbox tidy** | Sundays 11:00 | Proposes moving unread newsletters and promotions out of your inbox, in plain English | Nothing yet: propose-only, with read-only Gmail. A separate executor that only your Google login can approve will carry out approved tidy-ups (in progress) |
 | **FPL brief** (optional) | Daily check, brief the evening before each deadline | Captain, transfers, bench and mini-league swings for your Fantasy Premier League team | Nothing. Recommendations only |
 | **Subscription watch** (optional) | 1st of each month | Lists your subscriptions and renewals from receipts in your email; asks cancel-or-keep about likely waste | Nothing. You cancel; it checks next month and logs the saving |
+| **Weather** (optional) | 06:30 and 18:30 daily | Today's and tomorrow's forecast where you are, plus trip destinations, with what to wear. Numbers straight from MET Norway (yr.no); clothing from fixed, tested rules | Nothing. Read-only |
 
 ## See it first
 
