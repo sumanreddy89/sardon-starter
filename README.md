@@ -66,6 +66,11 @@ Most personal-agent projects measure what their agents do: messages handled, tas
 
 Each run logs whether it was on time. Each win goes in the Value ledger at a fixed rate (a deadline caught is 15 minutes, a prep page 20, and so on), and counts only when you mark it "Used it". After a month you'll know which agents earn their place.
 
+## Before you trust it
+
+- [THREAT_MODEL.md](THREAT_MODEL.md): what's enforced by code, what's only an instruction, where your data goes, and what a malicious email could and couldn't do.
+- [FRIEND_TEST.md](FRIEND_TEST.md): the pass/fail criteria for the first outside test, written before it ran.
+
 ## What we won't build
 
 Ideas that don't strengthen governance, measurement or operability go on the [someday list](SOMEDAY.md), not into the kit.

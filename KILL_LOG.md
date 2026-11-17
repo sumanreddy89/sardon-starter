@@ -1,14 +1,16 @@
 # Kill log
 
-Every agent retired, merged, demoted or cut back in the full build, with the evidence and the reason. Newest first. An entry is added in the same change that retires the agent.
+Every agent retired, merged, demoted or cut back in the full build, with the evidence and the reason. Newest first. An entry is added in the same change that makes the decision. Cut-backs and merges count: they're the proof that measurement changes what runs.
 
-| Date | Agent | Decision | Evidence | Reason |
-|---|---|---|---|---|
-| 2026-11-17 | Job search | Cut back: 5 runs a week to 1 (Sundays), with week-long windows | Most runs in the run log reported no new recruiting mail and no interviews in the next 7 days; the owner hit the weekly usage limit | Five Opus runs a week for one active role cost more than they returned. Trade-off accepted: an interview booked midweek for the same week gets no automatic prep page |
-| 2026-11-17 | Weather | Cut back: twice daily to once (06:30) | The evening run duplicated what the morning run already covered (today and tomorrow); usage limit hit | Half the runs for the same information |
-| 2026-11-17 | Hub backup | Cut back before first run: weekly to monthly | A backup writes out every row of every table, one of the costlier runs | The hub changes slowly; a month of exposure is an acceptable risk for a quarter of the cost |
-| 2026-11-16 | Inbox tidy | Demoted: could label and archive mail; now propose-only, with read-only Gmail | An outside review found its safety guard was advisory: the agent supplied the guard's inputs itself | An agent shouldn't be the one checking its own limits. Approved tidy-ups will be carried out by a separate executor that only the owner's Google login can approve |
-| 2026-11-14 | Commitments, Post ideas, Paperwork | Cut back: Commitments to weekdays, Post ideas to Saturdays, Paperwork to the 15th | Weekend and extra runs produced nothing the owner used | Fewer runs, same output |
-| 2026-11-13 | Weekly agent scorecard | Merged into the Weekly review | Two separate weekend runs read the same run log and value ledger and produced two pages | One page, one read of the data |
-| 2026-11-13 | Weekly trip scan | Merged into Travel watch | Travel watch and the trip scan both read the same booking emails | Two agents doing one job |
-| 2026-11-10 | Trip brief and Flight check (one-off agents) | Retired; replaced by the Travel watch and a day-of flight check inside the morning brief | Agents were creating these one-off routines themselves | No agent may create or run other agents. Only the owner, through Claude in chat, changes the fleet |
+Types: **Retired** (switched off for good), **Merged** (its job moved into another agent), **Cut back** (fewer runs or a cheaper setup), **Demoted** (lost a permission).
+
+| Date | Type | Agent | Decision | Evidence | Reason |
+|---|---|---|---|---|---|
+| 2026-11-17 | Cut back | Job search | Cut back: 5 runs a week to 1 (Sundays), with week-long windows | Most runs in the run log reported no new recruiting mail and no interviews in the next 7 days; the owner hit the weekly usage limit | Five Opus runs a week for one active role cost more than they returned. Trade-off accepted: an interview booked midweek for the same week gets no automatic prep page |
+| 2026-11-17 | Cut back | Weather | Cut back: twice daily to once (06:30) | The evening run duplicated what the morning run already covered (today and tomorrow); usage limit hit | Half the runs for the same information |
+| 2026-11-17 | Cut back | Hub backup | Cut back before first run: weekly to monthly | A backup writes out every row of every table, one of the costlier runs | The hub changes slowly; a month of exposure is an acceptable risk for a quarter of the cost |
+| 2026-11-16 | Demoted | Inbox tidy | Demoted: could label and archive mail; now propose-only, with read-only Gmail | An outside review found its safety guard was advisory: the agent supplied the guard's inputs itself | An agent shouldn't be the one checking its own limits. Approved tidy-ups will be carried out by a separate executor that only the owner's Google login can approve |
+| 2026-11-14 | Cut back | Commitments, Post ideas, Paperwork | Cut back: Commitments to weekdays, Post ideas to Saturdays, Paperwork to the 15th | Weekend and extra runs produced nothing the owner used | Fewer runs, same output |
+| 2026-11-13 | Merged | Weekly agent scorecard | Merged into the Weekly review | Two separate weekend runs read the same run log and value ledger and produced two pages | One page, one read of the data |
+| 2026-11-13 | Merged | Weekly trip scan | Merged into Travel watch | Travel watch and the trip scan both read the same booking emails | Two agents doing one job |
+| 2026-11-10 | Retired | Trip brief and Flight check (one-off agents) | Retired; replaced by the Travel watch and a day-of flight check inside the morning brief | Agents were creating these one-off routines themselves | No agent may create or run other agents. Only the owner, through Claude in chat, changes the fleet |
