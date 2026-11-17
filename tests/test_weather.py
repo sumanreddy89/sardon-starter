@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
-from weather import outfit_for, outlook_day, summarise_day  # noqa: E402
+from weather import known_place, outfit_for, outlook_day, summarise_day  # noqa: E402
 
 
 def hours(temp, feels=None, rain=0.0, prob=0, gust=3, symbol="cloudy", uv=0, start=7, end=23, day="2026-11-17"):
@@ -101,6 +101,28 @@ class Outlook(unittest.TestCase):
 
     def test_no_blocks(self):
         self.assertIsNone(outlook_day([]))
+
+
+
+class KnownPlaces(unittest.TestCase):
+    def test_home_city_needs_no_lookup(self):
+        p = known_place("Tallinn")
+        self.assertEqual((p["country_code"], p["timezone"]), ("EE", "Europe/Tallinn"))
+        self.assertTrue(p["yr_url"].endswith("/2-588409"))
+
+    def test_case_accents_and_country_suffix(self):
+        self.assertEqual(known_place("malaga")["name"], "Málaga")
+        self.assertEqual(known_place("Tartu, Estonia")["country_code"], "EE")
+
+    def test_unknown_city_falls_back(self):
+        self.assertIsNone(known_place("Nowhereville"))
+
+    def test_table_is_sane(self):
+        import json
+        from weather import PLACES_FILE
+        for k, r in json.load(open(PLACES_FILE, encoding="utf-8")).items():
+            self.assertTrue(-90 <= r["lat"] <= 90 and -180 <= r["lon"] <= 180, k)
+            self.assertIn("/", r["timezone"], k)
 
 
 if __name__ == "__main__":

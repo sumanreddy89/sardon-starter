@@ -26,7 +26,7 @@ STEP 2 - Where is the owner? Read Facts with the Facts Feed view (see the hub Ru
 STEP 3 - Run the script (one short Bash command each):
 - Where the owner is: `python3 CHECKOUT/tools/weather.py --place "<city>" --days 2` (morning run) or `--days 2` as well in the evening, but in the evening keep only the row whose Kind is "Tomorrow".
 - Each trip: `python3 CHECKOUT/tools/weather.py --place "<city>" --kind trip --from <first trip day> --days <trip length, at most 9>`.
-If a command fails or prints {"error": ...}, don't guess: skip that place and say so in the Run log.
+If a command fails or prints {"error": ...}, don't guess: skip that place and say so in the Run log. Cities in tools/places.json need only api.met.no; others also need geocoding-api.open-meteo.com, so name a failed lookup in the Run log.
 
 STEP 4 - Write to the Weather table ({{hub.tables.weather}}). Read its Feed view ({{hub.views.weather}}) once. For each object in the script's "notion_rows": if a row with the same "Day" title exists, update it in place with update-page using those properties exactly; otherwise create it with create-pages (the data source as parent). Copy every property exactly as printed; don't add, round or reword anything. Never delete rows.
 
