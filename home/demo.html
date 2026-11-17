@@ -72,6 +72,27 @@ section { display: grid; gap: 12px; min-width: 0; align-content: start; }
 .chip.good { background: var(--good-soft); color: var(--good); }
 .chip.plain { background: transparent; border: 1px solid var(--line); color: var(--muted); }
 
+/* Weather */
+.wx { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.wx-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.wx-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.wx-place { font-weight: 600; }
+.wx-temp { font: 800 32px/1 var(--display); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.wx-temp small { font: 500 14px var(--body); color: var(--muted); letter-spacing: 0; margin-left: 8px; }
+.wx-sum { color: var(--muted); font-size: 14px; }
+.wx-wear { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.wx-wear b { font-size: 13px; margin-right: 2px; }
+.wx-periods { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; font-size: 13px; }
+.wx-periods div { border-top: 1px solid var(--line); padding-top: 6px; color: var(--muted); }
+.wx-periods strong { display: block; color: var(--ink); font-variant-numeric: tabular-nums; }
+.wx-side { display: grid; gap: 12px; align-content: start; }
+.wx-mini { font-size: 14px; }
+.wx-mini .wx-temp { font-size: 22px; }
+.wx-trip { display: grid; gap: 2px; padding-top: 8px; border-top: 1px solid var(--line); font-size: 13.5px; }
+.wx-trip:first-of-type { border-top: 0; padding-top: 0; }
+.wx-foot { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); font-family: var(--mono); }
+@media (max-width: 760px) { .wx { grid-template-columns: minmax(0, 1fr); } }
+
 /* Value strip */
 .value { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
 .vstat { padding: 14px 16px; display: grid; gap: 2px; border-left: 1px solid var(--line); min-width: 0; }
@@ -159,6 +180,11 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
   <section aria-labelledby="h-now">
     <div class="sec-head"><h2 id="h-now">Now</h2><span class="sec-note" id="now-note">Ranked by the morning brief</span></div>
     <div class="now" id="now"><div class="state">Loading your top three…</div></div>
+  </section>
+
+  <section aria-labelledby="h-wx">
+    <div class="sec-head"><h2 id="h-wx">Weather</h2><span class="sec-note" id="wx-note">From yr.no (MET Norway)</span></div>
+    <div id="weather"><div class="state">Loading the forecast…</div></div>
   </section>
 
   <section aria-labelledby="h-value" class="value-wrap">
@@ -251,7 +277,8 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
     promises: "collection://demo-1f169957df4d",
     jobs: "collection://demo-772a2f837631",
     ideas: "collection://demo-5eb97ff6818d",
-    value: "collection://demo-13fb9807f0e9"
+    value: "collection://demo-13fb9807f0e9",
+    weather: "collection://demo-4d596849eae6"
   };
   const dsId = (key) => DS[key].replace("collection://", "");
   // Saved "Feed" views: view-mode reads don't count against Notion's hourly query allowance.
@@ -264,12 +291,13 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
     promises: "view://demo-b30ddba1",
     jobs: "view://demo-770d4a6c",
     ideas: "view://demo-6b7ce1d6",
-    value: "view://demo-9a1ea239"
+    value: "view://demo-9a1ea239",
+    weather: "view://demo-c0eaaedd"
   };
   // Expected gap between runs, in days, before an agent counts as late.
   const AGENTS = [
     ["Morning brief", 4], ["Commitments", 4], ["Job search", 3], ["Inbox tidy", 8], ["Subscription watch", 32],
-    ["Paperwork", 32], ["Travel watch", 8], ["FPL brief", 9], ["Health check", 2], ["Week ahead", 8]
+    ["Paperwork", 32], ["Travel watch", 8], ["FPL brief", 9], ["Health check", 2], ["Week ahead", 8], ["Weather", 1]
   ];
   const AGENT_LABEL = { "Week ahead": "Weekly review" };
 
@@ -608,6 +636,79 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
     });
   }
 
+  function listOf(v) {
+    if (Array.isArray(v)) return v;
+    if (!v) return [];
+    try { const j = JSON.parse(v); return Array.isArray(j) ? j : [String(v)]; } catch (_) { return String(v).split(",").map((x) => x.trim()).filter(Boolean); }
+  }
+  function wxFlags(r, box) {
+    listOf(r.Flags).forEach((f) => box.appendChild(el("span", "chip " + (/ice|storm|heavy/i.test(f) ? "bad" : "warn"), f)));
+  }
+  function wxRange(r) { return (r.Low != null && r.High != null) ? Math.round(r.Low) + "° – " + Math.round(r.High) + "°" : "—"; }
+  function renderWeather(rows) {
+    const box = $("weather"); box.replaceChildren();
+    const t = todayISO(), tm = addDays(t, 1);
+    rows = rows.filter((r) => (r["date:Date:start"] || "").slice(0, 10) >= t);
+    const home = rows.filter((r) => r.Kind !== "Trip");
+    const today = home.find((r) => r["date:Date:start"].slice(0, 10) === t);
+    const tomorrow = home.find((r) => r["date:Date:start"].slice(0, 10) === tm);
+    const trips = rows.filter((r) => r.Kind === "Trip");
+    if (!today && !tomorrow && !trips.length) { box.appendChild(el("div", "state", "No forecast yet. The Weather agent fills this at 06:30 and 18:30.")); return; }
+    const upd = rows.map((r) => r["date:Updated:start"]).filter(Boolean).sort().pop();
+    if (upd) $("wx-note").textContent = "yr.no forecast issued " + new Date(upd).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    const grid = el("div", "wx");
+    const main = today || tomorrow;
+    const c = el("article", "wx-card");
+    const head = el("div", "wx-head");
+    head.appendChild(el("span", "wx-place", (main === today ? "Today" : "Tomorrow") + " in " + (main.Place || "")));
+    if (main.Yr) head.appendChild(link("Open in Yr", main.Yr));
+    c.appendChild(head);
+    const temp = el("div", "wx-temp", wxRange(main));
+    if (main.Feels != null) temp.appendChild(el("small", null, "feels like " + Math.round(main.Feels) + "°"));
+    c.appendChild(temp);
+    if (main.Summary) c.appendChild(el("div", "wx-sum", cleanMd(main.Summary)));
+    const flags = el("div", "wx-wear"); wxFlags(main, flags); if (flags.childNodes.length) c.appendChild(flags);
+    if (main.Outfit) {
+      const wear = el("div", "wx-wear"); wear.appendChild(el("b", null, "Wear"));
+      String(main.Outfit).split(",").map((x) => x.trim()).filter(Boolean).forEach((x) => wear.appendChild(el("span", "chip plain", x)));
+      c.appendChild(wear);
+    }
+    if (main.Periods) {
+      const per = el("div", "wx-periods");
+      String(main.Periods).split(";").map((x) => x.trim()).filter(Boolean).forEach((x) => {
+        const m = x.match(/^(\w+)\s+(.*)$/); const d = el("div"); d.appendChild(el("strong", null, m ? m[1] : x)); if (m) d.appendChild(document.createTextNode(m[2])); per.appendChild(d);
+      });
+      c.appendChild(per);
+    }
+    if (main.Sun) { const f = el("div", "wx-foot"); const [sr, ss] = String(main.Sun).split(/[–-]/); f.appendChild(el("span", null, ss ? "Sunrise " + sr + " · sunset " + ss : main.Sun)); c.appendChild(f); }
+    grid.appendChild(c);
+
+    const side = el("div", "wx-side");
+    if (today && tomorrow) {
+      const m = el("article", "wx-card wx-mini");
+      const h = el("div", "wx-head"); h.appendChild(el("span", "wx-place", "Tomorrow · " + (tomorrow.Place || ""))); m.appendChild(h);
+      const tt = el("div", "wx-temp", wxRange(tomorrow)); if (tomorrow.Feels != null) tt.appendChild(el("small", null, "feels " + Math.round(tomorrow.Feels) + "°")); m.appendChild(tt);
+      if (tomorrow.Summary) m.appendChild(el("div", "wx-sum", cleanMd(tomorrow.Summary)));
+      const fl = el("div", "wx-wear"); wxFlags(tomorrow, fl); if (fl.childNodes.length) m.appendChild(fl);
+      if (tomorrow.Outfit) m.appendChild(el("div", "wx-sum", "Wear: " + tomorrow.Outfit));
+      side.appendChild(m);
+    }
+    if (trips.length) {
+      const tc = el("article", "wx-card wx-mini");
+      const places = [...new Set(trips.map((r) => r.Place))];
+      tc.appendChild(el("div", "wx-place", "Trip" + (places.length > 1 ? "s" : "") + ": " + places.join(", ")));
+      trips.slice(0, 7).forEach((r) => {
+        const d = el("div", "wx-trip");
+        d.appendChild(el("span", null, fmtDay(r["date:Date:start"]) + " · " + wxRange(r)));
+        d.appendChild(el("span", "wx-sum", cleanMd(r.Summary || "") + (r.Outfit ? " · " + r.Outfit : "")));
+        tc.appendChild(d);
+      });
+      side.appendChild(tc);
+    }
+    if (side.childNodes.length) grid.appendChild(side); else grid.style.gridTemplateColumns = "minmax(0, 1fr)";
+    box.appendChild(grid);
+  }
+
   function renderSoon(rows) {
     const box = $("soon"); box.replaceChildren();
     const t = todayISO(), end = addDays(t, 30);
@@ -666,7 +767,7 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
 
     const rb = $("rate"); rb.replaceChildren();
     const since = addDays(t, -7);
-    const toRate = rows.filter((r) => (r["date:Date:start"] || "") >= since && !["Health check", "Setup", "Commitments"].includes(r.Agent))
+    const toRate = rows.filter((r) => (r["date:Date:start"] || "") >= since && !["Health check", "Setup", "Commitments", "Weather"].includes(r.Agent))
       .sort((a, b) => String(b["date:Date:start"]).localeCompare(String(a["date:Date:start"]))).slice(0, 12);
     if (!toRate.length) { rb.appendChild(el("div", "empty", "No runs in the last 7 days.")); return; }
     toRate.forEach((r) => {
@@ -742,6 +843,7 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
       facts: pick(lastData.facts, ["Fact", "Value", "Topic", "Updated by", "date:Valid until:start"]),
       promises_open: pick(lastData.promises, ["Commitment", "Direction", "Who", "date:Due:start", "Status"]),
       job_pipeline: pick(lastData.jobs, ["Company", "Role", "Stage", "Next step", "date:Next date:start", "date:Last contact:start", "date:Promised reply by:start"]),
+      weather: pick(lastData.weather, ["Day", "Kind", "Summary", "Outfit", "Flags", "Low", "High", "Feels", "Rain from", "Sun"]),
       value_ledger: pick((lastData.value || []).slice(0, 40), ["Win", "Kind", "Agent", "Saved EUR per year", "Minutes saved", "Used?", "date:Date:start"]),
       post_ideas: pick(lastData.ideas, ["Idea", "Angle", "Status", "Sources", "date:Added:start"]),
       recent_runs: pick((lastData.runs || []).slice(0, 40), ["Agent", "date:Date:start", "Summary", "Result", "On time", "Minutes late", "Useful?"])
@@ -836,6 +938,7 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
 
   function start() {
     query("now", 10, renderNow, ["now"]);
+    query("weather", 40, renderWeather, ["weather"]);
     query("proposed", 50, renderProposed, ["proposed"]);
     query("promises", 100, renderPromises, ["promises"]);
     query("notes", 100, renderNotes, ["notes"]);
@@ -852,7 +955,7 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
   };
 
   // ---- Demo: invented data served by an in-memory stand-in for Notion ----
-  const all = ["now", "value", "proposed", "promises", "notes", "rate", "jobs", "ideas", "soon", "agents"];
+  const all = ["now", "weather", "value", "proposed", "promises", "notes", "rate", "jobs", "ideas", "soon", "agents"];
   const T = todayISO(), D = (n) => addDays(T, n);
   let seq = 0;
   const id = () => "https://www.notion.so/demo-" + (++seq).toString(16).padStart(32, "0");
@@ -899,6 +1002,12 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
       row({ Win: "Duplicate music subscription found", Kind: "Money saved", Agent: "Subscription watch", "Minutes saved": 0, "Saved EUR per year": 131, "Used?": "Used it", "date:Date:start": D(-9), Link: "#" }),
       row({ Win: "Ready reply for the landlord's repair question", Kind: "Time saved", Agent: "Morning brief", "Minutes saved": 5, "date:Date:start": T, Link: "#" })
     ],
+    weather: [
+      row({ Day: "Berlin today", Place: "Berlin", Kind: "Today", "date:Date:start": T, Low: 1, High: 4, Feels: -3, Summary: "1° to 4°, feels like -3°; rain likely from 15:00 (80%, 2.4 mm)", Outfit: "Warm coat, Sweater, Hat, Gloves, Umbrella or waterproof, Shoes with good grip", Flags: ["Ice risk"], Periods: "Morning 1° (feels -3°), rain 10%; Midday 3° (feels 0°), rain 20%; Afternoon 4° (feels 1°), rain 80%; Evening 2° (feels -2°), rain 70%", Sun: "07:41–16:04", Yr: "#yr", "date:Updated:start": new Date().toISOString() }),
+      row({ Day: "Berlin tomorrow", Place: "Berlin", Kind: "Tomorrow", "date:Date:start": D(1), Low: 2, High: 6, Feels: 0, Summary: "2° to 6°, feels like 0°; dry", Outfit: "Warm coat, Sweater, Hat, Gloves", Flags: [], Yr: "#yr" }),
+      row({ Day: "Lisbon day 1", Place: "Lisbon", Kind: "Trip", "date:Date:start": D(17), Low: 12, High: 17, Summary: "Outlook (less precise): 12° to 17°; mostly dry", Outfit: "Light jacket, Long sleeves", Flags: [] }),
+      row({ Day: "Lisbon day 2", Place: "Lisbon", Kind: "Trip", "date:Date:start": D(18), Low: 13, High: 18, Summary: "Outlook (less precise): 13° to 18°; rain likely (6.2 mm)", Outfit: "Light jacket, Long sleeves, Umbrella or waterproof", Flags: [] })
+    ],
     facts: [
       row({ Fact: "Lisbon trip 4–9 Dec", Value: "Flights booked; hotel not found in email", Topic: "Trip", "Updated by": "Travel watch", "date:Valid until:start": D(17) }),
       row({ Fact: "Deadline: Bank proof of address", Value: "Requested 10 days ago; no deadline stated", Topic: "Admin", "Updated by": "Paperwork", "date:Valid until:start": D(12) }),
@@ -910,7 +1019,7 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
       ["Job search", -1, "3 active; prep kit for Lumen Health"], ["Health check", 0, "All agents ran on time"],
       ["Week ahead", -2, "1 clash caught · 2 Good, 1 Watch, 4 Too early"], ["Inbox tidy", -2, "Propose-only: 2 new tidy-ups"],
       ["Paperwork", -3, "6 deadlines tracked · 1 within 45 days"], ["Subscription watch", -15, "11 subscriptions; 1 cancel-or-keep question"],
-      ["Travel watch", -1, "Lisbon 4–9 Dec: check-in opens 3 Dec"], ["FPL brief", -4, "GW12 · Captain: Haaland · Transfer: Saka out, Palmer in"]
+      ["Travel watch", -1, "Lisbon 4–9 Dec: check-in opens 3 Dec"], ["Weather", 0, "Berlin today 1–4°, ice risk; tomorrow 2–6°, dry"], ["FPL brief", -4, "GW12 · Captain: Haaland · Transfer: Saka out, Palmer in"]
     ].map(([a, d, sum], i) => row({ Agent: a, Summary: sum, Result: "Done", "On time": i === 6 ? "__NO__" : "__YES__", "date:Date:start": D(d), "Report link": "#report", "Useful?": i === 1 ? "Yes" : undefined }))
   };
   const KEY_BY_VIEW = {}; Object.keys(VIEW).forEach((k) => { KEY_BY_VIEW[VIEW[k]] = k; });

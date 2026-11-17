@@ -98,6 +98,15 @@ CREATE TABLE (
 )
 ```
 
+## Weather (optional)
+Forecast and what to wear, one row per place and day, written by the Weather agent from MET Norway (yr.no).
+
+```sql
+CREATE TABLE ("Day" TITLE, "Place" RICH_TEXT, "Date" DATE, "Kind" SELECT('Today':blue, 'Tomorrow':gray, 'Trip':orange), "Summary" RICH_TEXT, "Outfit" RICH_TEXT, "Flags" MULTI_SELECT('Ice risk':red, 'Heavy rain':blue, 'Heavy snow':purple, 'Storm':red, 'Windy':yellow, 'Snow':gray), "Low" NUMBER, "High" NUMBER, "Feels" NUMBER, "Rain chance" NUMBER, "Rain mm" NUMBER, "Rain from" RICH_TEXT, "Gust" NUMBER, "Sun" RICH_TEXT, "Periods" RICH_TEXT, "Yr" URL, "Updated" DATE)
+```
+
+Add "Weather" to the Run log "Agent" options.
+
 ## Feed views
 
 After creating each table, add one table view named **Feed** with `create-view` (`database_id` = the new database). Agents and Home read these views, which don't count against Notion's hourly query allowance.
@@ -110,5 +119,6 @@ After creating each table, add one table view named **Feed** with `create-view` 
 | Heads-up notes | `FILTER "Status" = "Open"; SORT BY "Date" DESC` |
 | Commitments | `FILTER "Status" = "Open"; SORT BY "Due" ASC` |
 | Value ledger | `SORT BY "Date" DESC` |
+| Weather | `SORT BY "Date" ASC` |
 
 Each `create-view` result gives a `view://…` address. Record it in Config under `hub.views`, and record each table's `collection://…` address under `hub.tables`.
