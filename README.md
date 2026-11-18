@@ -8,6 +8,24 @@ It's not a product or a chatbot. It's a template: fork it and you run your own t
 
 Preview. This kit is the first part of a system one person runs every day.
 
+## Start here
+
+Not sure yet? Open `home/demo.html` in a browser first. It's the Home page with an invented person's week: approvals, promises, wins to confirm, agent health. Every button works and nothing is saved.
+
+### What you need
+
+- A paid Claude plan that includes scheduled tasks (see [What it costs](#what-it-costs)), with Claude Code.
+- Notion and Gmail connected at claude.ai → Settings → Connectors.
+- A GitHub fork of this repo, with the Claude GitHub app allowed to read it.
+- About 30 minutes.
+
+### Set it up
+
+1. Fork this repo and clone your fork.
+2. Open Claude Code in the clone.
+3. Paste the prompt from [SETUP_PROMPT.md](starter/SETUP_PROMPT.md). It creates your hub ([HUB_SCHEMA.md](starter/HUB_SCHEMA.md), [HUB_PAGE.md](starter/HUB_PAGE.md)), writes your Config, creates the routines and test-runs them, asking before each step.
+4. Protect your fork's `main` branch so agents can never push to it.
+
 ## How this differs
 
 Most personal-agent projects measure what their agents do: messages handled, tasks completed, hours of activity. This one measures what the owner gets back, after the time it costs to supervise them. An agent's output counts as a win only when the owner marks it "used". Supervision (reading reports, approving proposals, correcting mistakes) is counted as a cost. And an agent that produces nothing the owner uses for four weeks is proposed for retirement. The measure is allowed to come out negative, because a number that can't go down proves nothing.
@@ -45,30 +63,12 @@ There is no third kind that works websites for you, logging in, booking or payin
 | **Subscription watch** (optional) | Proactive | 1st of each month | Lists your subscriptions and renewals from receipts in your email; asks cancel-or-keep about likely waste | Nothing. You cancel; it checks next month and logs the saving |
 | **Weather** (optional) | Proactive | 06:30 daily | Today's and tomorrow's forecast where you are, plus trip destinations, with what to wear. Numbers straight from MET Norway (yr.no); clothing from fixed, tested rules | Nothing. Read-only |
 
-## See it first
-
-`home/demo.html` is the Home page with an invented person's week: approvals, promises, wins to confirm, agent health. Open it in a browser; every button works and nothing is saved. Your real Home reads your own Notion hub.
-
 ## What it costs
 
 - **A paid Claude plan that includes scheduled tasks (routines).** Free plans don't run scheduled agents.
 - **Agent runs count against the same usage limits as your own chats.** The full build hit its weekly limit once while being developed, and runs that hit the limit fail. The kit is designed to be much lighter.
 - **Estimated draw for this kit: about 3 to 6 million tokens a month, mostly Sonnet** (roughly a sixth of the full build). This is an estimate from run lengths, not a measurement; Anthropic doesn't publish plan limits in tokens. It will be replaced with measured numbers after the first outside test.
 - Biggest costs, in order: Commitments (weekdays), Weather (daily), then the weekly and monthly agents.
-
-## What you need
-
-- The Claude plan above, with Claude Code.
-- Notion and Gmail connected at claude.ai → Settings → Connectors.
-- A GitHub fork of this repo, with the Claude GitHub app allowed to read it.
-- About 30 minutes.
-
-## Set it up
-
-1. Fork this repo and clone your fork.
-2. Open Claude Code in the clone.
-3. Paste the prompt from [SETUP_PROMPT.md](starter/SETUP_PROMPT.md). It creates your hub ([HUB_SCHEMA.md](starter/HUB_SCHEMA.md), [HUB_PAGE.md](starter/HUB_PAGE.md)), writes your Config, creates the routines and test-runs them, asking before each step.
-4. Protect your fork's `main` branch so agents can never push to it.
 
 ## Safety
 
