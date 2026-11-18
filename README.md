@@ -8,6 +8,12 @@ Preview. This kit is the first part of a system one person runs every day: sched
 
 Most personal-agent projects measure what their agents do: messages handled, tasks completed, hours of activity. This one measures what the owner gets back, after the time it costs to supervise them. An agent's output counts as a win only when the owner marks it "used". Supervision (reading reports, approving proposals, correcting mistakes) is counted as a cost. And an agent that produces nothing the owner uses for four weeks is proposed for retirement. The measure is allowed to come out negative, because a number that can't go down proves nothing.
 
+## Owned, gated, measured
+
+- **Owned.** The agents run on your own Claude plan, from your own fork, and write to your own Notion hub. You can read every instruction they follow, and the kit's author receives nothing. Switch off any agent and the rest keep running.
+- **Gated.** Agents watch and propose; nothing touches your accounts until you approve it. No agent logs in, books or pays anywhere.
+- **Measured.** Every run is logged. A win counts only when you mark it used. Agents that stop earning their place are retired, and the retirements are published in the [kill log](KILL_LOG.md).
+
 ## What's in this kit, and what isn't yet
 
 | Part | In this kit | In the full build |
@@ -67,6 +73,7 @@ There is no third kind that works websites for you, logging in, booking or payin
 - Anything that touches your accounts goes to **Proposed actions** first. Silence means no.
 - Inbox tidy's limits are enforced in code and covered by tests (`python3 -m unittest discover tests`).
 - Kill switch: add a Facts row "Pause inbox tidy" updated by you.
+- Switch off any agent by asking Claude Code to disable its routine. Nothing is deleted, and no agent depends on another.
 - Your personal values live only in your private Notion Config, never in the repo.
 
 ## Measuring it
