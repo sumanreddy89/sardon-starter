@@ -6,13 +6,13 @@ owner:
   timezone: Europe/Berlin
   home_city: Berlin
   home_country: Germany
-agents:
-  morning_brief: false
+kit:
+  fork: alex/sardon-starter
+  ref: 0000000000000000000000000000000000000000
 inbox_tidy:
   keep_senders: "Newsletter A, Newsletter B"
-fpl:
-  entry_id: 1234567
-  repo: sumanreddy89/fpl-gameweek-brief
+weather:
+  user_agent: ""
 hub:
   page_id: your-notion-hub-page-id
 private_terms: []
