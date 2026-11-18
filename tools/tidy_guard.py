@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Gatekeeper for Inbox tidy: decides, in code, whether one approved tidy-up may touch Gmail.
+"""Rules for carrying out one approved inbox tidy-up: decides whether it may touch Gmail.
 
-The agent must run this for every approved row and obey the verdict. The rules
-live here, not only in the prompt, so they hold even if the agent misreads its
-instructions or an email tries to talk it into something.
+Not used by any agent in this kit yet: Inbox tidy is propose-only. This is kept,
+with its tests, for a future executor. It only checks the inputs it is given, so
+whatever runs it must read those inputs itself; an agent supplying its own inputs
+would be checking its own limits.
 
 Verdicts (printed as JSON, also the exit code):
   ACT      (0) - all checks pass; use the returned "search" and "label" exactly,

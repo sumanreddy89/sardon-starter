@@ -171,7 +171,7 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
       <div class="sub"><span id="today"></span><span id="updated"></span></div>
     </div>
     <div class="sub">
-      <span class="demo-tag">Demo · invented data · nothing is saved</span>
+      <span class="demo-tag">Demo of the full build · invented data · nothing is saved · the kit doesn't install this page</span>
       <button class="refresh" id="speak" type="button" hidden>▶ Read my day</button>
       <button class="refresh" id="refresh" type="button">Refresh</button>
     </div>
@@ -606,8 +606,8 @@ input[type="text"], input[type="date"], select, textarea { background: var(--bg)
     const caught = (rs) => rs.filter((r) => r.Kind === "Deadline caught" || r.Kind === "Conflict caught").length;
     const stats = [
       [String(usedMonth.length), "wins you used this month", used.length + " all time · " + pending.length + " to check"],
-      [hours(sum(usedMonth, "Minutes saved")), "of your time saved", "only wins you used · " + hours(sum(used, "Minutes saved")) + " all time"],
-      ["€" + Math.round(sum(used, "Saved EUR per year")), "a year saved", "cancellations you confirmed"],
+      [hours(sum(usedMonth, "Minutes saved")), "estimated time saved", "rate card, wins you used · " + hours(sum(used, "Minutes saved")) + " all time"],
+      ["€" + Math.round(sum(used, "Saved EUR per year")), "a year, estimated", "cancellations you confirmed"],
       [String(caught(usedMonth)), "deadlines and clashes caught", caught(used) + " all time"]
     ];
     stats.forEach(([n, l, s]) => { const c = el("div", "vstat"); c.appendChild(el("div", "vnum", n)); c.appendChild(el("div", "vlabel", l)); c.appendChild(el("div", "vsub", s)); box.appendChild(c); });
