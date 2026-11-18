@@ -20,13 +20,20 @@ Most personal-agent projects measure what their agents do: messages handled, tas
 
 ## The agents
 
-| Agent | When | What it does | What it can change |
-|---|---|---|---|
-| **Commitments** | Weekdays 07:20 | Finds promises in your email, both ways ("I'll send it Friday", "refund in 5 days"), tracks them and closes them when kept | Only the hub. If someone owes you and is late, it proposes a polite nudge draft. It writes the draft only after you approve, and never sends |
-| **Inbox tidy** | Sundays 11:00 | Proposes moving unread newsletters and promotions out of your inbox, in plain English | Nothing: propose-only, with read-only Gmail. A separate executor that only your Google login can approve will carry out approved tidy-ups (in progress) |
-| **FPL brief** (optional) | Daily check; a brief the evening before each deadline | Captain, transfers, bench and mini-league swings for your Fantasy Premier League team | Nothing. Recommendations only |
-| **Subscription watch** (optional) | 1st of each month | Lists your subscriptions and renewals from receipts in your email; asks cancel-or-keep about likely waste | Nothing. You cancel; it checks next month and logs the saving |
-| **Weather** (optional) | 06:30 daily | Today's and tomorrow's forecast where you are, plus trip destinations, with what to wear. Numbers straight from MET Norway (yr.no); clothing from fixed, tested rules | Nothing. Read-only |
+There are two kinds of agent:
+
+- **Live:** "Ask the hub" on your Home page. It answers when you ask, from your hub, and anything it suggests saving waits for your tap.
+- **Proactive:** the scheduled agents below. They run while you're away, watching your email, deadlines and forecasts, and leave proposals and reports in your hub.
+
+There is no third kind that works websites for you, logging in, booking or paying. That's deliberate: every action that touches your accounts waits for your approval.
+
+| Agent | Kind | When | What it does | What it can change |
+|---|---|---|---|---|
+| **Commitments** | Proactive | Weekdays 07:20 | Finds promises in your email, both ways ("I'll send it Friday", "refund in 5 days"), tracks them and closes them when kept | Only the hub. If someone owes you and is late, it proposes a polite nudge draft. It writes the draft only after you approve, and never sends |
+| **Inbox tidy** | Proactive | Sundays 11:00 | Proposes moving unread newsletters and promotions out of your inbox, in plain English | Nothing: propose-only, with read-only Gmail. A separate executor that only your Google login can approve will carry out approved tidy-ups (in progress) |
+| **FPL brief** (optional) | Proactive | Daily check; a brief the evening before each deadline | Captain, transfers, bench and mini-league swings for your Fantasy Premier League team | Nothing. Recommendations only |
+| **Subscription watch** (optional) | Proactive | 1st of each month | Lists your subscriptions and renewals from receipts in your email; asks cancel-or-keep about likely waste | Nothing. You cancel; it checks next month and logs the saving |
+| **Weather** (optional) | Proactive | 06:30 daily | Today's and tomorrow's forecast where you are, plus trip destinations, with what to wear. Numbers straight from MET Norway (yr.no); clothing from fixed, tested rules | Nothing. Read-only |
 
 ## See it first
 
