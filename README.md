@@ -1,8 +1,12 @@
 # Sardon Steadfast starter
 
-> **A personal AI team with a strict manager.** Agents propose, you approve. A win counts only when you confirm it. The time you spend supervising is subtracted. Agents that stop earning their place get retired, and the retirements are published.
+> **What a personal AI team looks like when the person actually owns it.**
 
-Preview. This kit is the first part of a system one person runs every day: scheduled Claude agents that share one Notion hub and keep a record you can check.
+It runs for you, never instead of you. Specialized agents watch your world, draft your work and keep a shared memory. They share one hub and one set of rules, written as plain instructions you can read. Nothing touches your accounts without your approval, and a win counts only when you confirm it.
+
+It's not a product or a chatbot. It's a template: fork it and you run your own team, for yourself. Where funded agents go deep on one domain for many users, this goes deep on one person's life: your conventions, your history, and a kill list of what didn't work.
+
+Preview. This kit is the first part of a system one person runs every day.
 
 ## How this differs
 
@@ -10,8 +14,8 @@ Most personal-agent projects measure what their agents do: messages handled, tas
 
 ## Owned, gated, measured
 
-- **Owned.** The agents run on your own Claude plan, from your own fork, and write to your own Notion hub. You can read every instruction they follow, and the kit's author receives nothing. Switch off any agent and the rest keep running.
-- **Gated.** Agents watch and propose; nothing touches your accounts until you approve it. No agent logs in, books or pays anywhere.
+- **Owned.** The agents run on your own Claude plan, from your own fork, and write to your own Notion hub. Your data stays in accounts you own and can export. You can read every instruction the agents follow, and the kit's author receives nothing. Switch off any agent and the rest keep running.
+- **Gated.** Agents observe and draft; they never send, book or spend. Nothing touches your accounts until you approve it, and no agent logs in anywhere.
 - **Measured.** Every run is logged. A win counts only when you mark it used. Agents that stop earning their place are retired, and the retirements are published in the [kill log](KILL_LOG.md).
 
 ## What's in this kit, and what isn't yet
