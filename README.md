@@ -10,21 +10,22 @@ Preview. This kit is a small, tested part of a fuller system one person runs eve
 
 ## Start here
 
-Not sure yet? Download `home/demo.html` and open it in a browser. It's the full build's Home page with an invented person's week: approvals, promises, wins to confirm, agent health. Every button works and nothing is saved. **The kit doesn't install a Home page:** you use your Notion hub directly.
+Not sure yet? Download `home/demo.html` and open it in a browser. It's the full build's Home page with an invented person's week: approvals, promises, wins to confirm, agent health. Every button works except Ask the hub, which needs the full build, and nothing is saved. **The kit doesn't install a Home page:** you use your Notion hub directly.
 
 ### What you need
 
 - A paid Claude plan that includes scheduled tasks (see [What it costs](#what-it-costs)), with Claude Code.
 - Notion and Gmail connected at claude.ai → Settings → Connectors.
 - A GitHub fork of this repo, with the Claude GitHub app allowed to read it.
+- Python 3 and git on your computer (setup runs the kit's tests).
 - About 30 minutes, if nothing goes wrong. No one outside has timed it yet; the [friend test](FRIEND_TEST.md) will.
 
 ### Set it up
 
-1. Fork this repo and clone your fork.
+1. Fork this repo and clone your fork. If you were asked to test a release, check that the commit setup reports in its first step is the commit of that release's tag (on the repo's Tags page). A fork copies `main`, not a tag.
 2. Open Claude Code in the clone.
 3. Paste the prompt from [SETUP_PROMPT.md](starter/SETUP_PROMPT.md). It creates your hub ([HUB_SCHEMA.md](starter/HUB_SCHEMA.md), [HUB_PAGE.md](starter/HUB_PAGE.md)), writes your Config, creates the routines and test-runs them, asking before each step.
-4. Protect your fork's `main` branch (require a pull request). This stops direct pushes; see [Safety](#safety) for what it doesn't stop.
+4. Protect your fork's `main` branch: Settings > Branches > add a classic branch protection rule for `main`. Tick "Require a pull request before merging", untick "Require approvals" (you're the only reviewer), and tick "Do not allow bypassing the above settings". This stops direct pushes; see [Safety](#safety) for what it doesn't stop.
 
 ## How this differs
 

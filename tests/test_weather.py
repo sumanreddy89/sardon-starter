@@ -125,7 +125,9 @@ class KnownPlaces(unittest.TestCase):
     def test_table_is_sane(self):
         import json
         from weather import PLACES_FILE
-        for k, r in json.load(open(PLACES_FILE, encoding="utf-8")).items():
+        with open(PLACES_FILE, encoding="utf-8") as f:
+            places = json.load(f)
+        for k, r in places.items():
             self.assertTrue(-90 <= r["lat"] <= 90 and -180 <= r["lon"] <= 180, k)
             self.assertIn("/", r["timezone"], k)
 

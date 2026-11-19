@@ -29,7 +29,8 @@ you create, and never change anything in my Gmail during setup.
 4. Create the tables in starter/HUB_SCHEMA.md as databases under that page: the six
    always, plus Weather only if I chose it (create-database, schema = each CREATE TABLE
    with {{owner.name}} replaced). Then add the "Feed" view to each with create-view and
-   the configure string from the table in that file. Write every collection:// and
+   the configure string from the table in that file, plus the second "All" view on
+   Proposed actions. Write every collection:// and
    view:// address into the page's Config block (remove the weather lines if I didn't
    choose it), and the view:// strings into the "Reading tables" rule, each in a code
    span so Notion doesn't turn it into a link. Fetch the page and show me the Config.
@@ -72,8 +73,9 @@ you create, and never change anything in my Gmail during setup.
    runs, how to approve a proposal (set Status to Approved in Proposed actions), how to
    pause Inbox tidy (a Facts row "Pause inbox tidy" with Updated by = my name), and how
    to switch off any agent (ask Claude Code to disable its routine). Also tell me to
-   protect my fork's main branch on GitHub (Settings > Branches: require a pull request
-   before merging, include administrators). Say plainly what that does and doesn't do:
+   protect my fork's main branch on GitHub (Settings > Branches, classic rule for main:
+   tick "Require a pull request before merging", untick "Require approvals", tick "Do
+   not allow bypassing the above settings"). Say plainly what that does and doesn't do:
    it stops direct pushes to main, but agents act with my GitHub identity, so it can't
    stop the Weather routine merging a pull request of its own. That's why the other
    agents' instructions are pinned to a commit.

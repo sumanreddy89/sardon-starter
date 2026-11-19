@@ -114,10 +114,13 @@ After creating each table, add one table view named **Feed** with `create-view` 
 |---|---|
 | Run log | `SORT BY "Date" DESC` |
 | Proposed actions | `FILTER "Status" = "Proposed"; SORT BY "Proposed on" DESC` |
+| Proposed actions (second view, named **All**) | `SORT BY "Proposed on" DESC` |
 | Facts | `SORT BY "Updated" DESC` |
 | Heads-up notes | `FILTER "Status" = "Open"; SORT BY "Date" DESC` |
 | Commitments | `FILTER "Status" = "Open"; SORT BY "Due" ASC` |
 | Value ledger | `SORT BY "Date" DESC` |
 | Weather | `SORT BY "Date" ASC` |
+
+The Proposed actions Feed shows only rows waiting for you, so it hides Approved, Declined and Expired rows. Agents that act on your approvals, or skip what you declined, read the **All** view instead (Config key `hub.views.proposed_actions_all`).
 
 Each `create-view` result gives a `view://…` address. Record it in Config under `hub.views`, and record each table's `collection://…` address under `hub.tables`.
