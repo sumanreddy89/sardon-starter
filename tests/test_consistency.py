@@ -216,6 +216,16 @@ class Visibility(unittest.TestCase):
             self.assertIn("hub.views." + key, keys)
         self.assertIn('"All" view on\n   Proposed actions', SETUP)
 
+    def test_every_agent_that_proposes_also_expires_its_proposals(self):
+        # Regression for 19 Nov 2026: the hub Rules promised that untouched proposals
+        # expire after 7 days, but no kit agent set Expired, so Inbox tidy's queue only grew.
+        self.assertIn("set to Expired by the agent that proposed them", PAGE)
+        for p in AGENTS:
+            _, body = front(p)
+            if 'Status "Proposed"' in body:
+                self.assertIn('Status "Expired"', body, p.name)
+                self.assertIn("7 or more days ago", body, p.name)
+
     def test_feed_still_shows_only_waiting_proposals(self):
         # The owner's approval queue stays short; agents use the All view for the rest.
         self.assertEqual(view_statuses(PROPOSAL_VIEWS["proposed_actions"]), {"Proposed"})
