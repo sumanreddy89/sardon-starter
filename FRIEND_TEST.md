@@ -1,6 +1,6 @@
 # First outside test: success criteria
 
-Written on 17 Nov 2026, **before** the test, so the result can't be argued either way afterwards. Revised on 18 Nov 2026, still before the test, so that the criteria check the kit's three claims: owned, gated, measured. Revised again on 18 Nov 2026 after an outside review, still before the test: logging, retention and cost criteria fixed so a correctly working kit can pass them. The tester uses the tagged release `v0.2` and their own Claude, Notion and Gmail accounts. The commit their routines are pinned to is recorded with the results.
+Written on 17 Nov 2026, **before** the test, so the result can't be argued either way afterwards. Revised on 18 Nov 2026, still before the test, so that the criteria check the kit's three claims: owned, gated, measured. Revised again on 18 Nov 2026 after an outside review, still before the test: logging, retention and cost criteria fixed so a correctly working kit can pass them. Revised on 19 Nov 2026, still before the test: the release moves to `v0.3`, because a test showed a routine's allowed tool list doesn't limit Gmail; v0.3 adds deny lists and explicit connectors, and the criteria are unchanged. The tester uses the tagged release `v0.3` and their own Claude, Notion and Gmail accounts. The commit their routines are pinned to is recorded with the results.
 
 ## Pass or fail
 

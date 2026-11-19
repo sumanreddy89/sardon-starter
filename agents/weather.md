@@ -4,6 +4,7 @@ schedule: "CRON_TZ={{owner.timezone}} 30 6 * * *"
 model: claude-sonnet-5-5
 runs_from: repo
 repo_sources: ["{{your fork}}"]
+connectors: [Notion]
 tools:
   - Bash
   - Read
@@ -14,6 +15,11 @@ tools:
   - mcp__Notion__notion-query-data-sources
   - mcp__Notion__notion-create-pages
   - mcp__Notion__notion-update-page
+disallowed_tools:
+  - mcp__Notion__notion-delete-pages
+  - mcp__Notion__notion-delete-databases
+  - mcp__Notion__notion-move-pages
+  - mcp__Notion__notion-update-data-source
 success: "Today's and tomorrow's forecast and what to wear in the hub by 06:45 every day, wherever the owner is; trip forecasts before each trip; no invented numbers"
 measured_by: "Run log on time; Used it on weather wins; owner reports of a wrong call"
 ---
@@ -26,7 +32,7 @@ STEP 2 - Where is the owner? Read Facts with the Facts Feed view (see the hub Ru
 STEP 3 - Run the script (one short Bash command each):
 - Where the owner is: `python3 CHECKOUT/tools/weather.py --place "<city>" --days 2`.
 - Each trip: `python3 CHECKOUT/tools/weather.py --place "<city>" --kind trip --from <first trip day> --days <trip length, at most 9>`.
-If a command fails or prints {"error": ...}, don't guess: skip that place and say so in the Run log. Cities in tools/places.json need only api.met.no; others also need geocoding-api.open-meteo.com, so name a failed lookup in the Run log.
+If a command fails or prints {"error": ...}, don't guess: skip that place and say so in the Run log. If the error starts with "Blocked:", no place will work: stop, log Result "Failed" with that error as the Summary, and send one push with it, because the owner has to fix a setting. Cities in tools/places.json need only api.met.no; others also need geocoding-api.open-meteo.com, so name a failed lookup in the Run log.
 
 STEP 4 - Write to the Weather table ({{hub.tables.weather}}). Read its Feed view ({{hub.views.weather}}) once. For each object in the script's "notion_rows": if a row with the same "Day" title exists, update it in place with update-page using those properties exactly; otherwise create it with create-pages (the data source as parent). Copy every property exactly as printed; don't add, round or reword anything. Never delete rows.
 

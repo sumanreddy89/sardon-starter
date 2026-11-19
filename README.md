@@ -54,7 +54,7 @@ All three are scheduled: they run while you're away and leave proposals and repo
 | Agent | When | What it does | What it can change |
 |---|---|---|---|
 | **Commitments** | Weekdays 07:20 | Finds promises in your email, both ways ("I'll send it Friday", "refund in 5 days"), tracks them, and closes them when the thread shows they were kept (with the evidence; you can reopen) | The hub. If someone owes you and is late, it proposes a polite nudge; after you approve, it writes a Gmail draft and never sends it |
-| **Inbox tidy** | Sundays 11:00 | Proposes clearing unread newsletters and promotions out of your inbox, in plain English, with the Gmail search to do it yourself | Nothing in Gmail: read-only access. Nothing in the kit carries out a tidy-up for you yet |
+| **Inbox tidy** | Sundays 11:00 | Proposes clearing unread newsletters and promotions out of your inbox, in plain English, with the Gmail search to do it yourself | Nothing in Gmail: every Gmail tool that changes mail is removed from its routine. Nothing in the kit carries out a tidy-up for you yet |
 | **Weather** (optional) | 06:30 daily | Today's and tomorrow's forecast where you are, plus trip destinations, with what to wear. Numbers straight from MET Norway (yr.no); clothing from fixed, tested rules | Nothing outside the hub. Its routine has your fork attached; see [Safety](#safety) |
 
 FPL brief, Subscription watch and the full build's other agents aren't in the kit.
@@ -72,7 +72,8 @@ What's enforced and what's only an instruction is spelled out in [THREAT_MODEL.m
 
 - **Automatic, without asking:** reading your email, writing to your hub, push notifications.
 - **Proposed first:** anything outside the hub. Commitments' Gmail drafts wait for your approval, but that rule is an instruction to the model, not a technical block.
-- **Not in any agent's tool list:** sending email, deleting, unsubscribing, paying. Setup shows you each routine's actual tools after creating it. Inbox tidy's Gmail tools are search and read only.
+- **Removed from every routine (its deny list):** sending, replying, forwarding, trashing, labelling and marking spam in Gmail, plus deleting or moving Notion pages. Commitments keeps create-draft for nudges you approve; Inbox tidy can only search and read. A routine's *allowed* tool list doesn't limit anything: in a 19 Nov test, a routine allowed only three Gmail reading tools still created a Gmail label. The deny list is what stopped it. Setup shows you each routine's deny list and connectors after creating it.
+- **Only the connectors each agent needs:** Notion and Gmail for Commitments and Inbox tidy, Notion only for Weather. Setup names them; a routine created without a list gets every connector you have.
 - **GitHub:** Commitments and Inbox tidy have no repo attached and download instructions pinned to one commit, so changes to your fork don't reach them until you update. Weather has your fork attached, which gives it GitHub access as you; protecting `main` stops direct pushes but not a pull request it opens and merges itself. Its instructions forbid that; nothing else does.
 - **Notion:** the connector reaches your whole workspace. Agents are told to stay inside the hub; nothing enforces it. Connect a workspace with nothing sensitive in it if that matters to you.
 - Pause Inbox tidy with a Facts row "Pause inbox tidy" updated by you. Switch off any agent by asking Claude Code to disable its routine; nothing is deleted, and no agent depends on another.

@@ -4,6 +4,7 @@ schedule: "CRON_TZ={{owner.timezone}} 0 11 * * 0"
 model: claude-sonnet-5-5
 runs_from: public-url
 repo_sources: []
+connectors: [Notion, Gmail]
 tools:
   - preset:default
   - Bash
@@ -22,10 +23,39 @@ tools:
   - mcp__Gmail__search_threads
   - mcp__Gmail__get_thread
   - mcp__Gmail__list_labels
+disallowed_tools:
+  - mcp__Gmail__send_message
+  - mcp__Gmail__reply
+  - mcp__Gmail__forward
+  - mcp__Gmail__create_draft
+  - mcp__Gmail__update_draft
+  - mcp__Gmail__delete_draft
+  - mcp__Gmail__trash_message
+  - mcp__Gmail__trash_thread
+  - mcp__Gmail__untrash_message
+  - mcp__Gmail__untrash_thread
+  - mcp__Gmail__mark_message_spam
+  - mcp__Gmail__mark_thread_spam
+  - mcp__Gmail__unmark_message_spam
+  - mcp__Gmail__unmark_thread_spam
+  - mcp__Gmail__create_label
+  - mcp__Gmail__update_label
+  - mcp__Gmail__delete_label
+  - mcp__Gmail__label_message
+  - mcp__Gmail__label_thread
+  - mcp__Gmail__unlabel_message
+  - mcp__Gmail__unlabel_thread
+  - mcp__Gmail__update_message_labels
+  - mcp__Gmail__apply_sensitive_message_label
+  - mcp__Gmail__apply_sensitive_thread_label
+  - mcp__Notion__notion-delete-pages
+  - mcp__Notion__notion-delete-databases
+  - mcp__Notion__notion-move-pages
+  - mcp__Notion__notion-update-data-source
 success: "At least half of proposed tidy-ups approved; no proposal that would have hidden mail the owner needed"
 measured_by: "Approved vs Declined in Proposed actions; owner reports of mistakes"
 ---
-Inbox tidy for {{owner.name}} (timezone {{owner.timezone}}). Runs Sundays at 11:00. You propose; you never change anything in Gmail. Your Gmail access is read-only (search and read). Nothing in this kit carries out an approved tidy-up yet: the owner does it themselves in Gmail with the search you give them, so make every proposal safe to follow by hand.
+Inbox tidy for {{owner.name}} (timezone {{owner.timezone}}). Runs Sundays at 11:00. You propose; you never change anything in Gmail. Your routine's deny list removes every Gmail tool that changes mail, so you can only search and read. Nothing in this kit carries out an approved tidy-up yet: the owner does it themselves in Gmail with the search you give them, so make every proposal safe to follow by hand.
 
 STEP 0 - Pause: if Facts has a current row updated by "{{owner.name}}" saying to pause Inbox tidy (e.g. "Pause inbox tidy"), propose nothing, log the run as paused and stop.
 

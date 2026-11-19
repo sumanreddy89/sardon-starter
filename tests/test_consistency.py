@@ -45,6 +45,28 @@ def config_keys():
     return keys
 
 
+def front_list(path, key):
+    """A YAML list (one "  - item" per line) or inline [a, b] from the front matter."""
+    fm = path.read_text().split("---", 2)[1]
+    m = re.search(r"^%s:[ \t]*\[(.*)\][ \t]*$" % key, fm, re.M)
+    if m:
+        return [x.strip() for x in m.group(1).split(",") if x.strip()]
+    m = re.search(r"^%s:\s*\n((?:  - .*\n)+)" % key, fm, re.M)
+    return [l.strip()[2:].strip() for l in m.group(1).splitlines()] if m else None
+
+
+# Every Gmail tool that changes mail, as listed by the Gmail connector on 19 Nov 2026.
+GMAIL_WRITES = {
+    "send_message", "reply", "forward", "create_draft", "update_draft", "delete_draft",
+    "trash_message", "trash_thread", "untrash_message", "untrash_thread",
+    "mark_message_spam", "mark_thread_spam", "unmark_message_spam", "unmark_thread_spam",
+    "create_label", "update_label", "delete_label", "label_message", "label_thread",
+    "unlabel_message", "unlabel_thread", "update_message_labels",
+    "apply_sensitive_message_label", "apply_sensitive_thread_label"}
+NOTION_DESTRUCTIVE = {"notion-delete-pages", "notion-delete-databases", "notion-move-pages",
+                      "notion-update-data-source"}
+
+
 NAMES = {p: front(p)[0]["name"] for p in AGENTS}
 
 
@@ -97,6 +119,62 @@ class Agents(unittest.TestCase):
             body = p.read_text()
             for gone in ("Morning brief", "morning brief", "Week ahead", "Job search agent", "Agent Hub", "on Home"):
                 self.assertNotIn(gone, body, (p.name, gone))
+
+
+class Permissions(unittest.TestCase):
+    """Regression for 19 Nov 2026: the allowed list didn't stop a routine creating a Gmail label."""
+
+    def test_every_agent_names_its_connectors(self):
+        for p in AGENTS:
+            conns = front_list(p, "connectors")
+            self.assertTrue(conns, p.name)
+            self.assertIn("Notion", conns, p.name)
+
+    def test_gmail_agents_deny_every_gmail_write_they_dont_need(self):
+        for p in AGENTS:
+            if "Gmail" not in front_list(p, "connectors"):
+                continue
+            allowed = {t.split("__")[-1] for t in front_list(p, "tools") if t.startswith("mcp__Gmail__")}
+            denied = {t.split("__")[-1] for t in front_list(p, "disallowed_tools") or [] if t.startswith("mcp__Gmail__")}
+            self.assertEqual(GMAIL_WRITES - allowed, denied - allowed, p.name)
+
+    def test_send_reply_forward_are_denied_everywhere_gmail_is(self):
+        for p in AGENTS:
+            if "Gmail" in front_list(p, "connectors"):
+                denied = front_list(p, "disallowed_tools")
+                for tool in ("send_message", "reply", "forward"):
+                    self.assertIn("mcp__Gmail__" + tool, denied, p.name)
+
+    def test_inbox_tidy_can_only_read_gmail(self):
+        p = ROOT / "agents" / "inbox-tidy.md"
+        allowed = {t.split("__")[-1] for t in front_list(p, "tools") if t.startswith("mcp__Gmail__")}
+        self.assertFalse(allowed & GMAIL_WRITES)
+
+    def test_notion_destructive_tools_denied(self):
+        for p in AGENTS:
+            denied = {t.split("__")[-1] for t in front_list(p, "disallowed_tools") or []}
+            self.assertLessEqual(NOTION_DESTRUCTIVE, denied, p.name)
+
+    def test_no_tool_is_both_allowed_and_denied(self):
+        for p in AGENTS:
+            self.assertFalse(set(front_list(p, "tools")) & set(front_list(p, "disallowed_tools") or []), p.name)
+
+    def test_agents_without_gmail_get_no_gmail_tools(self):
+        for p in AGENTS:
+            if "Gmail" not in front_list(p, "connectors"):
+                self.assertFalse([t for t in front_list(p, "tools") if "Gmail" in t], p.name)
+
+    def test_setup_sets_deny_list_and_connectors(self):
+        self.assertIn("disallowed_tools", SETUP)
+        self.assertIn("mcp_connections", SETUP)
+        self.assertIn("api.met.no", SETUP)
+
+    def test_docs_dont_claim_the_allowed_list_is_a_limit(self):
+        threat = (ROOT / "THREAT_MODEL.md").read_text()
+        for doc, text in (("README", README), ("THREAT_MODEL", threat), ("agents/README", AGENTS_README)):
+            for claim in ("Not in any agent's tool list", "search and read only", "read-only Gmail",
+                          "can only call the tools it was given", "No agent has a send tool"):
+                self.assertNotIn(claim, text, (doc, claim))
 
 
 class Schedules(unittest.TestCase):

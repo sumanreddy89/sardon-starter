@@ -1,6 +1,16 @@
 # Agents
 
-One file per scheduled agent. The YAML front matter is metadata (schedule, model, tools); the body is the agent's instructions, with `{{placeholders}}` for personal values.
+One file per scheduled agent. The YAML front matter is metadata (schedule, model, connectors, tools, deny list); the body is the agent's instructions, with `{{placeholders}}` for personal values.
+
+## What limits a routine
+
+Three settings, and only two of them are limits. Tested on 19 Nov 2026.
+
+- **`connectors`**: the only connectors the routine gets. Setup must list them explicitly; a routine created without a connector list gets every connector you've connected.
+- **`disallowed_tools`** (the deny list): these tools are removed from the routine entirely. The agent can't load or call them. Every Gmail tool that sends, replies, forwards, drafts, trashes, labels or marks spam is on it, except `create_draft` for Commitments.
+- **`tools`** (the allowed list) is **not** a limit. It only pre-approves tools. In the test, a routine whose allowed list had three Gmail reading tools could still load all 31 Gmail tools and created a Gmail label. Don't rely on it.
+
+When you change a routine, send its whole configuration (environment, model, tools, deny list and prompt). A partial update replaces the session settings and erases the prompt.
 
 ## How a routine runs an agent
 
@@ -26,8 +36,8 @@ Result "Failed" and the reason, send a push saying so, and stop.
 
 | File | Schedule | Changes anything outside the hub? |
 |---|---|---|
-| `commitments.md` | Weekdays 07:20 | Creates a reply draft only for a nudge you approved (an instruction, not enforced); never sends |
-| `inbox-tidy.md` | Sundays 11:00 | No. Propose-only, with read-only Gmail. You carry out approved tidy-ups yourself in Gmail |
+| `commitments.md` | Weekdays 07:20 | Creates a reply draft only for a nudge you approved (an instruction, not enforced). Sending, replying and every other Gmail change are on its deny list |
+| `inbox-tidy.md` | Sundays 11:00 | No. Propose-only; every Gmail tool that changes mail is on its deny list. You carry out approved tidy-ups yourself in Gmail |
 | `weather.md` (optional) | 06:30 daily | No. Read-only forecast from MET Norway (yr.no) |
 
 FPL brief and Subscription watch run in the full build only.

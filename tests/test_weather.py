@@ -4,6 +4,11 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
+import json  # noqa: E402
+import urllib.error  # noqa: E402
+from unittest import mock  # noqa: E402
+
+import weather  # noqa: E402
 from weather import known_place, outfit_for, outlook_day, summarise_day  # noqa: E402
 
 
@@ -123,6 +128,32 @@ class KnownPlaces(unittest.TestCase):
         for k, r in json.load(open(PLACES_FILE, encoding="utf-8")).items():
             self.assertTrue(-90 <= r["lat"] <= 90 and -180 <= r["lon"] <= 180, k)
             self.assertIn("/", r["timezone"], k)
+
+
+
+class Blocked(unittest.TestCase):
+    """Regression: a blocked domain must say what to fix, not crash with a traceback."""
+
+    def error_for(self, exc):
+        with mock.patch("urllib.request.urlopen", side_effect=exc):
+            with self.assertRaises(SystemExit) as cm:
+                weather._get("https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=1&lon=1")
+        return json.loads(str(cm.exception.code))["error"]
+
+    def test_403_names_the_domain_and_the_fix(self):
+        msg = self.error_for(urllib.error.HTTPError("u", 403, "Forbidden", {}, None))
+        self.assertTrue(msg.startswith("Blocked:"))
+        self.assertIn("api.met.no", msg)
+        self.assertIn("allowed domains", msg)
+
+    def test_unreachable_host_is_blocked_too(self):
+        msg = self.error_for(urllib.error.URLError("Name or service not known"))
+        self.assertTrue(msg.startswith("Blocked: can't reach api.met.no"))
+
+    def test_other_http_errors_are_not_called_blocked(self):
+        with mock.patch("urllib.request.urlopen", side_effect=urllib.error.HTTPError("u", 500, "x", {}, None)):
+            with self.assertRaises(urllib.error.HTTPError):
+                weather._get("https://api.met.no/x")
 
 
 if __name__ == "__main__":
