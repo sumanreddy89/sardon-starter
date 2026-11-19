@@ -177,6 +177,50 @@ class Permissions(unittest.TestCase):
                 self.assertNotIn(claim, text, (doc, claim))
 
 
+# Config key of each Proposed actions view -> its row label in the schema's Feed views table.
+PROPOSAL_VIEWS = {"proposed_actions": "Proposed actions",
+                  "proposed_actions_all": "Proposed actions (second view, named **All**)"}
+# Statuses an agent can act on, and how its instructions refer to them.
+STATUS_WORDS = {"Approved": r"\bApproved\b", "Declined": r"\b[Dd]eclined\b",
+                "Expired": r"\b[Ee]xpire"}
+ALL_STATUSES = {"Proposed", "Approved", "Declined", "Expired", "Done"}
+
+
+def view_statuses(label):
+    """Statuses a Feed-views-table row shows: its FILTER values, or every status if unfiltered."""
+    m = re.search(r"^\| %s \| `([^`]*)` \|$" % re.escape(label), SCHEMA, re.M)
+    assert m, label
+    shown = set(re.findall(r'"Status" = "(\w+)"', m.group(1)))
+    return shown or set(ALL_STATUSES)
+
+
+class Visibility(unittest.TestCase):
+    """Regression for 19 Nov 2026: the Proposed actions Feed shows only Proposed rows, so an
+    agent reading it never saw the owner's approvals, and nothing reported an error."""
+
+    def test_agents_read_a_view_that_shows_every_proposal_status_they_act_on(self):
+        for p in AGENTS:
+            _, body = front(p)
+            if "Proposed actions" not in body:
+                continue
+            needed = {s for s, pat in STATUS_WORDS.items() if re.search(pat, body)}
+            visible = set()
+            for key, label in PROPOSAL_VIEWS.items():
+                if "{{hub.views.%s}}" % key in body:
+                    visible |= view_statuses(label)
+            self.assertLessEqual(needed, visible, (p.name, needed - visible))
+
+    def test_proposal_views_are_in_config_and_setup(self):
+        keys = config_keys()
+        for key in PROPOSAL_VIEWS:
+            self.assertIn("hub.views." + key, keys)
+        self.assertIn('"All" view on\n   Proposed actions', SETUP)
+
+    def test_feed_still_shows_only_waiting_proposals(self):
+        # The owner's approval queue stays short; agents use the All view for the rest.
+        self.assertEqual(view_statuses(PROPOSAL_VIEWS["proposed_actions"]), {"Proposed"})
+
+
 class Schedules(unittest.TestCase):
     def test_readme_times_match_crons(self):
         for p, name in NAMES.items():
