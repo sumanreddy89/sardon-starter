@@ -16,7 +16,7 @@ Where my scheduled Claude agents log their runs, leave notes for each other, pro
 - **Value ledger:** when a run creates real value, add one row: Win (one short line), Kind, Agent, Date today, Minutes saved from this rate card (Deadline caught 15 · Conflict caught 10 · Promise kept 10 · Prep done 20 · Time saved 5). These minutes are an estimate from a fixed rate card, not measured time, Link. Leave "Used?" empty; only I fill it. Never log routine runs or the same win twice.
 - **Privacy:** one short line per entry. No amounts, balances, account numbers, email contents, or other people's details.
 - **Facts** hold the current answer to things agents might flag; read Facts before raising anything, and my rows always win.
-- **Proposed actions** left untouched for 7 days are Expired.
+- **Proposed actions** left untouched for 7 days are set to Expired by the agent that proposed them.
 
 ## Config
 
