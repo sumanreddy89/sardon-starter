@@ -231,6 +231,25 @@ class Visibility(unittest.TestCase):
         self.assertEqual(view_statuses(PROPOSAL_VIEWS["proposed_actions"]), {"Proposed"})
 
 
+class RunThrough(unittest.TestCase):
+    """Regressions from the 19 Nov 2026 live run-through of the kit."""
+
+    def test_agents_name_the_only_result_values(self):
+        # Both Gmail agents first wrote Result "Success", which Notion rejects.
+        for p in AGENTS:
+            _, body = front(p)
+            if "Run log" in body:
+                self.assertIn('"Done", "Partial" or "Failed"', body, p.name)
+
+    def test_commitments_records_the_thread_to_reply_in(self):
+        _, body = front(ROOT / "agents" / "commitments.md")
+        self.assertIn("Details = the Commitments row's Thread link", body)
+        self.assertIn("thread linked in its Details", body)
+
+    def test_setup_mentions_the_environment(self):
+        self.assertIn("environment_id", SETUP)
+
+
 class Schedules(unittest.TestCase):
     def test_readme_times_match_crons(self):
         for p, name in NAMES.items():

@@ -36,7 +36,9 @@ you create, and never change anything in my Gmail during setup.
    span so Notion doesn't turn it into a link. Fetch the page and show me the Config.
 
 5. Create the scheduled routines with the RemoteTrigger tool (load it via ToolSearch;
-   the /schedule skill explains the body shape). One routine each for
+   the /schedule skill explains the body shape, including the cloud environment
+   (environment_id) every routine needs). Use the same environment for all of them, so
+   step 5b only has to allow api.met.no once. One routine each for
    agents/commitments.md and agents/inbox-tidy.md, plus agents/weather.md only if I
    chose it. For each, take name, model, tools (allowed_tools), disallowed_tools and
    schedule from the file's front matter, replacing {{owner.timezone}} in the cron. Put
@@ -60,7 +62,8 @@ you create, and never change anything in my Gmail during setup.
    allowed domains. If my home city isn't in tools/places.json, also add
    geocoding-api.open-meteo.com. Wait for me to confirm before step 6.
 
-6. Test, with my go-ahead for each run:
+6. Test, with my go-ahead for each run. These test runs happen outside the agents'
+   scheduled times, so their Run log rows will say they were late; tell me that's expected.
    - Run Inbox tidy once now. Check its Run log row and tell me what it proposed.
      Confirm nothing changed in Gmail.
    - Run Commitments once now and check its Run log row.
