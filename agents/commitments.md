@@ -4,6 +4,7 @@ schedule: "CRON_TZ={{owner.timezone}} 20 7 * * 1-5"
 model: claude-sonnet-5-5
 runs_from: public-url
 repo_sources: []
+connectors: [Notion, Gmail]
 tools:
   - preset:default
   - Bash
@@ -23,6 +24,34 @@ tools:
   - mcp__Gmail__get_thread
   - mcp__Gmail__create_draft
   - mcp__Gmail__get_message
+disallowed_tools:
+  - mcp__Gmail__send_message
+  - mcp__Gmail__reply
+  - mcp__Gmail__forward
+  - mcp__Gmail__update_draft
+  - mcp__Gmail__delete_draft
+  - mcp__Gmail__trash_message
+  - mcp__Gmail__trash_thread
+  - mcp__Gmail__untrash_message
+  - mcp__Gmail__untrash_thread
+  - mcp__Gmail__mark_message_spam
+  - mcp__Gmail__mark_thread_spam
+  - mcp__Gmail__unmark_message_spam
+  - mcp__Gmail__unmark_thread_spam
+  - mcp__Gmail__create_label
+  - mcp__Gmail__update_label
+  - mcp__Gmail__delete_label
+  - mcp__Gmail__label_message
+  - mcp__Gmail__label_thread
+  - mcp__Gmail__unlabel_message
+  - mcp__Gmail__unlabel_thread
+  - mcp__Gmail__update_message_labels
+  - mcp__Gmail__apply_sensitive_message_label
+  - mcp__Gmail__apply_sensitive_thread_label
+  - mcp__Notion__notion-delete-pages
+  - mcp__Notion__notion-delete-databases
+  - mcp__Notion__notion-move-pages
+  - mcp__Notion__notion-update-data-source
 success: "Fewer than 1 in 5 new promises dropped by the owner (false positives); every promise past due is flagged by the next weekday run"
 measured_by: "Rows the owner sets to Dropped vs Done; overdue rows"
 ---

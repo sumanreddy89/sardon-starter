@@ -37,16 +37,27 @@ you create, and never change anything in my Gmail during setup.
 5. Create the scheduled routines with the RemoteTrigger tool (load it via ToolSearch;
    the /schedule skill explains the body shape). One routine each for
    agents/commitments.md and agents/inbox-tidy.md, plus agents/weather.md only if I
-   chose it. For each, take name, model, tools (allowed_tools) and schedule from the
-   file's front matter, replacing {{owner.timezone}} in the cron. Repositories: attach
-   NO repository to Commitments or Inbox tidy (they download their instructions
-   read-only). Attach my fork to Weather only, because it runs tools/weather.py.
-   Connectors: Notion and Gmail for Commitments and Inbox tidy; Notion only for Weather.
-   The prompt is the bootstrap prompt in agents/README.md, filled in with the agent's
-   name and file, my fork's owner/name, the commit from step 1 as {REF}, my hub page id
-   and my Run log address. Make sure my fork is public, since the agents download from
-   it. Show me each body before creating it, and afterwards show me the allowed tools
-   the created routine actually has (RemoteTrigger get).
+   chose it. For each, take name, model, tools (allowed_tools), disallowed_tools and
+   schedule from the file's front matter, replacing {{owner.timezone}} in the cron. Put
+   disallowed_tools in job_config.ccr.session_context next to allowed_tools: it is the
+   deny list that removes Gmail and Notion tools that change things. The allowed list
+   does not limit anything on its own. Repositories: attach NO repository to Commitments
+   or Inbox tidy (they download their instructions read-only). Attach my fork to Weather
+   only, because it runs tools/weather.py. Connectors: set mcp_connections to exactly the
+   front matter's `connectors` (Notion and Gmail for Commitments and Inbox tidy; Notion
+   only for Weather). Never leave mcp_connections out: a routine without it gets every
+   connector I have. The prompt is the bootstrap prompt in agents/README.md, filled in
+   with the agent's name and file, my fork's owner/name, the commit from step 1 as
+   {REF}, my hub page id and my Run log address. Make sure my fork is public, since the
+   agents download from it. Show me each body before creating it, and afterwards show
+   me what the created routine actually has (RemoteTrigger get): its connectors and its
+   disallowed_tools. Stop and tell me if either is missing.
+
+5b. Weather only, if I chose it: routines run with limited internet access, and MET
+   Norway (api.met.no) isn't allowed by default. Tell me to open the Weather routine on
+   claude.ai, open its cloud environment's network settings and add api.met.no to the
+   allowed domains. If my home city isn't in tools/places.json, also add
+   geocoding-api.open-meteo.com. Wait for me to confirm before step 6.
 
 6. Test, with my go-ahead for each run:
    - Run Inbox tidy once now. Check its Run log row and tell me what it proposed.
@@ -73,10 +84,11 @@ this folder, so it can be fixed for the next person.
 
 ## Updating the kit later
 
-The routines follow the commit they were pinned to at setup, so changes to your fork (including any an agent makes) don't reach them until you choose. To update: pull the changes you want into your fork, then ask Claude Code to "update my Sardon routines to the current commit". It changes {REF} in each routine's prompt and the `kit.ref` line in your Config.
+The routines follow the commit they were pinned to at setup, so changes to your fork (including any an agent makes) don't reach them until you choose. To update: pull the changes you want into your fork, then ask Claude Code to "update my Sardon routines to the current commit". It changes {REF} in each routine's prompt and the `kit.ref` line in your Config. An update must send each routine's whole job configuration (environment, model, allowed tools, deny list and prompt): a partial update replaces the session settings, which erases the prompt and the deny list.
 
 ## If something goes wrong
 
 - **A routine can't read the repo:** the Claude GitHub app needs access to your fork (github.com/settings/installations).
+- **Weather writes "Blocked: api.met.no":** the domain isn't in the routine environment's allowed domains (step 5b), or MET Norway refused the request. Add the domain, or set `weather.user_agent` in Config to something with your contact details.
 - **An agent writes "Failed: can't read Config":** fetch the hub page and check the Config block is a single YAML code block with no `{{…}}` left in it.
 - **Notion says a select option doesn't exist:** the agent's name is missing from that table's option list (see the note at the top of `HUB_SCHEMA.md`).

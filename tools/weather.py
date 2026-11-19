@@ -17,6 +17,7 @@ import json
 import os
 import sys
 import unicodedata
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta
@@ -46,10 +47,26 @@ STORM_GUST = 20.0
 
 # ---------- data fetching ----------
 
+def blocked_message(host, code=None):
+    """Plain words for a refused or unreachable host: the owner has to change a setting."""
+    why = (f"{host} refused the request ({code})" if code else f"can't reach {host}")
+    return (f"Blocked: {why}. Add {host} to the allowed domains of this routine's cloud "
+            f"environment on claude.ai; if it's already there, set weather.user_agent in Config "
+            f"to include your contact details.")
+
+
 def _get(url):
+    host = urllib.parse.urlparse(url).hostname
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=20) as r:
-        return json.loads(r.read().decode())
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return json.loads(r.read().decode())
+    except urllib.error.HTTPError as e:
+        if e.code in (401, 403, 407):
+            raise SystemExit(json.dumps({"error": blocked_message(host, e.code)}))
+        raise
+    except urllib.error.URLError:
+        raise SystemExit(json.dumps({"error": blocked_message(host)}))
 
 
 PLACES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "places.json")
