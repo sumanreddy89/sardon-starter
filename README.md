@@ -8,6 +8,8 @@ It's not a product or a chatbot. It's a template: fork it and you run your own t
 
 Preview. This kit is a small, tested part of a fuller system one person runs every day (the "full build"). Where the two differ, this README says so.
 
+**Status: release [`v0.4`](https://github.com/sumanreddy89/sardon-starter/releases/tag/v0.4). The first outside test hasn't happened yet; it starts on 1 Dec 2026** ([criteria, written before it runs](FRIEND_TEST.md)). The numbers so far: [what it costs](COSTS.md), measured, and the [kill log](KILL_LOG.md) of every agent retired, merged or cut back.
+
 ## Start here
 
 Not sure yet? Download `home/demo.html` and open it in a browser. It's the full build's Home page with an invented person's week: approvals, promises, wins to confirm, agent health. Every button works except Ask the hub, which needs the full build, and nothing is saved. **The kit doesn't install a Home page:** you use your Notion hub directly.
@@ -27,15 +29,11 @@ Not sure yet? Download `home/demo.html` and open it in a browser. It's the full 
 3. Paste the prompt from [SETUP_PROMPT.md](starter/SETUP_PROMPT.md). It creates your hub ([HUB_SCHEMA.md](starter/HUB_SCHEMA.md), [HUB_PAGE.md](starter/HUB_PAGE.md)), writes your Config, creates the routines and test-runs them, asking before each step.
 4. Protect your fork's `main` branch: Settings > Branches > add a classic branch protection rule for `main`. Tick "Require a pull request before merging", untick "Require approvals" (you're the only reviewer), and tick "Do not allow bypassing the above settings". This stops direct pushes; see [Safety](#safety) for what it doesn't stop.
 
-## How this differs
-
-Most personal-agent projects measure what their agents do: messages handled, tasks completed, hours of activity. This one counts what the owner actually used. In the kit, an agent's output counts as a win only when you mark it "Used it". The full build goes further: its weekly review subtracts supervision time (reading reports, approving proposals, correcting mistakes) and proposes retiring any agent with no confirmed wins in four weeks, so the measure can come out negative. A number that can't go down proves nothing.
-
 ## Owned, gated, measured
 
 - **Owned.** The agents run on your own Claude plan, from your own fork, and write to your own Notion hub. Your data stays in accounts you own and can export. You can read every instruction the agents follow, and the kit's author receives nothing. Switch off any agent and the rest keep running.
 - **Gated.** Agents read your email and write to your hub without asking. Anything else is proposed first, and no agent sends, books, spends or logs in anywhere.
-- **Measured.** Every run is logged. A win counts only when you mark it used. In the full build, agents that stop earning their place are retired, and the retirements are published in the [kill log](KILL_LOG.md).
+- **Measured.** Most agent projects count what their agents do; this counts what you used. Every run is logged, and a win counts only when you mark it "Used it". The full build also subtracts your supervision time, so the measure can come out negative, and retires agents that stop earning their place ([kill log](KILL_LOG.md)). A number that can't go down proves nothing.
 
 ## What's in this kit, and what isn't yet
 
@@ -64,8 +62,7 @@ FPL brief, Subscription watch and the full build's other agents aren't in the ki
 
 - **A paid Claude plan that includes scheduled tasks (routines).** Free plans don't run scheduled agents.
 - **Agent runs count against the same usage limits as your own chats.** The full build hit its weekly limit once while being developed, and runs that hit the limit fail. The kit is designed to be much lighter.
-- **Estimated draw for this kit: about 3 to 6 million tokens a month, mostly Sonnet** (roughly a sixth of the full build). This is an estimate from run lengths, not a measurement; Anthropic doesn't publish plan limits in tokens. It will be replaced with measured numbers after the first outside test.
-- Biggest costs, in order: Commitments (weekdays), Weather (daily), then Inbox tidy (weekly).
+- **Measured run time and confirmed wins, per agent: [COSTS.md](COSTS.md)**, from one week of the full build, bad numbers included. The kit's three agents (all Sonnet) made 11 runs and used about 6 minutes in that week. There's no euro figure yet: plan usage is reported as a share of a weekly limit, and that share wasn't captured. The friend test will measure the kit on someone else's account.
 
 ## Safety
 
@@ -79,6 +76,19 @@ What's enforced and what's only an instruction is spelled out in [THREAT_MODEL.m
 - **Notion:** the connector reaches your whole workspace. Agents are told to stay inside the hub; nothing enforces it. Connect a workspace with nothing sensitive in it if that matters to you.
 - Pause Inbox tidy with a Facts row "Pause inbox tidy" updated by you. Switch off any agent by asking Claude Code to disable its routine; nothing is deleted, and no agent depends on another.
 - Your personal values live only in your private Notion Config, never in the repo.
+
+### What the gate does not stop
+
+The approval gate covers actions outside the hub. It does not stop:
+
+- **An agent reading your email.** Reading is allowed without asking; that's how the agents work.
+- **Wrong or misleading rows in your hub.** Agents write to the hub on their own. A malicious email could steer what they write.
+- **An agent reaching other Notion pages.** The connector can reach your whole workspace; staying inside the hub is an instruction, not a block.
+- **Commitments creating a Gmail draft you didn't approve.** It's never sent, but *when* a draft is created is an instruction.
+- **Weather merging a pull request in your fork.** Its routine has GitHub access as you, and GitHub's review rules don't stop the account they act as.
+- **Usage.** Runs count against your Claude plan's limits like your own chats; nothing caps an agent's run time.
+
+Details and tests: [THREAT_MODEL.md](THREAT_MODEL.md).
 
 ## Measuring it
 

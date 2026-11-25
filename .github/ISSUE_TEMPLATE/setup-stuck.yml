@@ -1,0 +1,46 @@
+name: Setup got stuck
+description: Setup stopped, failed or did something unexpected. Every report becomes data for the friend test.
+title: "Setup stuck at step: "
+labels: ["setup"]
+body:
+  - type: input
+    id: step
+    attributes:
+      label: Step
+      description: Which step of SETUP_PROMPT.md (or the README's "Set it up") were you on?
+      placeholder: "e.g. 4. Create the routines"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you expected, and what happened instead. Paste any error text. Leave out email contents, names and anything personal.
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit
+      description: The commit setup reported in its first step (or `git rev-parse --short HEAD` in your clone).
+      placeholder: "e.g. 9d94873"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS and versions
+      description: Your operating system, and if you know them, your Python and Claude Code versions.
+      placeholder: "e.g. macOS 26.0, Python 3.13, Claude Code 2.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: plan
+    attributes:
+      label: Claude plan
+      options: ["Pro", "Max", "Team", "Enterprise", "Not sure"]
+  - type: textarea
+    id: minutes
+    attributes:
+      label: Time so far
+      description: Roughly how long you'd spent on setup when it got stuck.
