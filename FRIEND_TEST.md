@@ -1,6 +1,6 @@
 # First outside test: success criteria
 
-Written on 17 Nov 2026, **before** the test, so the result can't be argued either way afterwards. Revised on 18 Nov 2026, still before the test, so that the criteria check the kit's three claims: owned, gated, measured. Revised again on 18 Nov 2026 after an outside review, still before the test: logging, retention and cost criteria fixed so a correctly working kit can pass them. Revised on 19 Nov 2026, still before the test: the release moves to `v0.3`, because a test showed a routine's allowed tool list doesn't limit Gmail; v0.3 adds deny lists and explicit connectors, and the criteria are unchanged. Revised on 25 Nov 2026, still before the test: the release moves to `v0.4`, because testers on `v0.3` would hit a bug where agents couldn't see approvals, which silently fails a test criterion (fixed in #20); v0.4 also has proposals that expire on their own (#21), the run-through fixes (#22) and the measured [COSTS.md](COSTS.md). The criteria are unchanged. The tester uses the tagged release `v0.4` and their own Claude, Notion and Gmail accounts. The commit their routines are pinned to is recorded with the results.
+Written on 17 Nov 2026, **before** the test, so the result can't be argued either way afterwards. Revised on 18 Nov 2026, still before the test, so that the criteria check the kit's three claims: owned, gated, measured. Revised again on 18 Nov 2026 after an outside review, still before the test: logging, retention and cost criteria fixed so a correctly working kit can pass them. Revised on 19 Nov 2026, still before the test: the release moves to `v0.3`, because a test showed a routine's allowed tool list doesn't limit Gmail; v0.3 adds deny lists and explicit connectors, and the criteria are unchanged. Revised on 25 Nov 2026, still before the test: the release moves to `v0.4`, because testers on `v0.3` would hit a bug where agents couldn't see approvals, which silently fails a test criterion (fixed in #20); v0.4 also has proposals that expire on their own (#21), the run-through fixes (#22) and the measured [COSTS.md](COSTS.md). The criteria are unchanged. Revised on 26 Nov 2026, still before the test (pull request #26, opened 26 Nov 2026 and merged only after 9 Dec because the kit was frozen for the test): three day-7 questions added under "Also recorded"; they are recorded, not pass/fail, and the criteria are unchanged. The tester uses the tagged release `v0.4` and their own Claude, Notion and Gmail accounts. The commit their routines are pinned to is recorded with the results.
 
 ## Pass or fail
 
@@ -21,6 +21,10 @@ All eight must pass. Anything else the tester hits is recorded as a finding, not
 
 - Did agent runs push the tester's plan to its limit?
 - Supervision minutes in the first week.
+- Three questions on day 7, asked without notes and recorded in the tester's own words:
+  1. What did an agent do this week that you didn't expect or approve?
+  2. Which agent would you switch off first, and why?
+  3. Roughly how many minutes did you spend checking or fixing agents this week?
 - Every question the tester asked, every point where they got stuck, and every bug, with the release it was found in.
 
 ## Retention (recorded, not pass/fail)
