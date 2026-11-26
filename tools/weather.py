@@ -5,7 +5,7 @@ The numbers come straight from api.met.no; the clothing advice comes from fixed
 rules below, so no AI rewords the forecast. Standard library only.
 
 Usage:
-  python3 tools/weather.py --place "Tallinn" --days 2
+  python3 tools/weather.py --place "London" --days 2
   python3 tools/weather.py --place "Lisbon" --from 2026-12-04 --days 3
 Prints one JSON object: {"place": {...}, "days": [{date, summary, outfit, flags, ...}]}
 
