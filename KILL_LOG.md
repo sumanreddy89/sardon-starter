@@ -2,7 +2,9 @@
 
 Every agent retired, merged, demoted or cut back in the full build, with the evidence and the reason. Newest first. An entry is added in the same change that makes the decision. Cut-backs and merges count: they're the proof that measurement changes what runs.
 
-Types: **Retired** (switched off for good), **Merged** (its job moved into another agent), **Cut back** (fewer runs or a cheaper setup), **Demoted** (lost a permission).
+Types: **Retired** (switched off for good), **Retired (kept as skill)** (the schedule is switched off but the owner still calls it by hand as a skill, so the skill stays), **Merged** (its job moved into another agent), **Cut back** (fewer runs or a cheaper setup), **Demoted** (lost a permission).
+
+From December 2026 the full build proposes these from measured numbers: no confirmed win in 28 days is Retired, or Retired (kept as skill) if the owner called the skill by hand at least once in that window. Under 28 days of history is "not enough data". These are proposals; the owner decides.
 
 | Date | Type | Agent | Decision | Evidence | Reason |
 |---|---|---|---|---|---|
